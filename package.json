@@ -1,7 +1,33 @@
 {
-  "name": "budget-office-working",
-  "version": "0.1.0",
+  "name": "akwa-ibom-budget-office-system",
+  "version": "1.0.0",
+  "description": "Budget Office Database Management System for Akwa Ibom State government - React TypeScript application for financial data management and staff administration",
   "private": true,
+  "homepage": "https://DevalSam.github.io/akwa-ibom-budget-office-system",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevalSam/akwa-ibom-budget-office-system.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "government",
+    "budget",
+    "financial-management",
+    "akwa-ibom",
+    "nigeria",
+    "administration",
+    "database",
+    "staff-management"
+  ],
+  "author": {
+    "name": "DevalSam",
+    "url": "https://github.com/DevalSam"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DevalSam/akwa-ibom-budget-office-system/issues"
+  },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -18,11 +44,19 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -41,5 +75,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }
