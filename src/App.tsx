@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// src/App.tsx
 
-function App() {
+import React from 'react';
+import { AppProvider, useAppContext } from './context/AppContext';
+import HomePage from './components/pages/HomePage';
+import BudgetOfficePage from './components/pages/BudgetOfficePage';
+import DatabasePage from './components/pages/DatabasePage';
+
+const AppContent: React.FC = () => {
+  const { state } = useAppContext();
+
+  const renderCurrentPage = () => {
+    switch (state.currentPage) {
+      case 'home':
+        return <HomePage />;
+      case 'budget-office':
+        return <BudgetOfficePage />;
+      case 'database':
+        return <DatabasePage />;
+      default:
+        return <HomePage />;
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {renderCurrentPage()}
     </div>
   );
-}
+};
+
+const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
+  );
+};
 
 export default App;

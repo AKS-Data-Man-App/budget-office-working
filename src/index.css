@@ -1,3 +1,12 @@
+/* src/index.css - Pure CSS Version */
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +14,671 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fafafa;
+  line-height: 1.6;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Akwa Ibom State Official Colors */
+:root {
+  --akwa-orange: #FF7F00;
+  --akwa-white: #FFFFFF;
+  --akwa-green: #008751;
+  --akwa-orange-light: #FFA500;
+  --akwa-green-light: #00A862;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+/* Header Styles */
+.akwa-header {
+  background: linear-gradient(135deg, var(--akwa-orange) 0%, var(--akwa-white) 30%, var(--akwa-white) 70%, var(--akwa-green) 100%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 0;
+}
+
+.header-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--gray-800);
+  margin-bottom: 0.5rem;
+}
+
+.header-subtitle {
+  font-size: 1.25rem;
+  color: var(--gray-700);
+}
+
+/* Layout Styles */
+.main-layout {
+  display: flex;
+  min-height: calc(100vh - 120px);
+}
+
+.sidebar {
+  width: 320px;
+  background-color: var(--gray-50);
+  border-right: 1px solid var(--gray-200);
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.sidebar-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--gray-800);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(255, 127, 0, 0.05) 0%, rgba(255, 255, 255, 1) 50%, rgba(0, 135, 81, 0.05) 100%);
+}
+
+/* Office Selection Styles */
+.office-button {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border: 2px solid var(--gray-200);
+  border-radius: 0.5rem;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.office-button:hover {
+  background-color: var(--gray-50);
+  border-color: var(--akwa-orange);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 127, 0, 0.15);
+}
+
+.office-button.active {
+  background: linear-gradient(135deg, rgba(255, 127, 0, 0.1) 0%, rgba(0, 135, 81, 0.1) 100%);
+  border-color: var(--akwa-orange);
+  box-shadow: 0 4px 15px rgba(255, 127, 0, 0.2);
+}
+
+.office-button.disabled {
+  background-color: var(--gray-100);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.office-button.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.office-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.office-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--gray-600);
+}
+
+.office-button.active .office-icon {
+  color: var(--akwa-orange);
+}
+
+.office-name {
+  font-weight: 500;
+  color: var(--gray-800);
+}
+
+.office-button.active .office-name {
+  color: var(--akwa-orange);
+}
+
+.status-indicator {
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: var(--akwa-green);
+  border-radius: 50%;
+}
+
+.coming-soon-badge {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  background-color: var(--gray-200);
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+}
+
+/* Official Akwa Ibom State Seal Styles */
+.official-state-seal {
+  width: 25rem;
+  height: 25rem;
+  margin: 0 auto;
+  position: relative;
+  animation: sealGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes sealGlow {
+  0% {
+    filter: drop-shadow(0 0 20px rgba(255, 127, 0, 0.3));
+  }
+  100% {
+    filter: drop-shadow(0 0 40px rgba(255, 127, 0, 0.6)) drop-shadow(0 0 60px rgba(0, 135, 81, 0.3));
+  }
+}
+
+.seal-outer-ring {
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 0deg, var(--akwa-green) 0%, var(--akwa-green) 100%);
+  border-radius: 50%;
+  border: 8px solid var(--akwa-orange);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+.seal-inner-background {
+  width: 85%;
+  height: 85%;
+  background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 50%, #E0F6FF 100%);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Text around the outer ring */
+.seal-top-text {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.seal-bottom-text {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Stars around the ring */
+.seal-star {
+  position: absolute;
+  color: var(--akwa-orange);
+  font-size: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.seal-star-1 { top: 15%; left: 20%; }
+.seal-star-2 { top: 15%; right: 20%; }
+.seal-star-3 { bottom: 30%; left: 10%; }
+.seal-star-4 { bottom: 30%; right: 10%; }
+.seal-star-5 { top: 50%; left: 5%; }
+.seal-star-6 { top: 50%; right: 5%; }
+
+/* Lion Head */
+.seal-lion {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.lion-crown {
+  font-size: 2rem;
+  margin-bottom: -0.5rem;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.lion-face {
+  font-size: 2.5rem;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Central Shield */
+.seal-central-shield {
+  width: 60%;
+  height: 50%;
+  position: relative;
+  margin-top: 2rem;
+}
+
+.shield-border {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, var(--akwa-orange) 0%, #FFD700 100%);
+  border-radius: 15% 15% 25% 25%;
+  border: 4px solid #B8860B;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  padding: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.shield-quadrant {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Top Left: Oil Industry */
+.shield-top-left {
+  background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+}
+
+.oil-derricks {
+  position: relative;
+}
+
+.derrick {
+  width: 3px;
+  background: #333;
+  position: absolute;
+  bottom: 0;
+}
+
+.derrick-1 { height: 20px; left: -8px; }
+.derrick-2 { height: 25px; left: 0px; }
+.derrick-3 { height: 18px; left: 8px; }
+
+/* Top Right: Marine Life */
+.shield-top-right {
+  background: linear-gradient(135deg, #4169E1 0%, #87CEEB 100%);
+}
+
+.marine-symbols {
+  position: relative;
+  text-align: center;
+}
+
+.fish {
+  font-size: 1.2rem;
+  position: absolute;
+}
+
+.fish-1 { top: -10px; left: -15px; transform: rotate(-15deg); }
+.fish-2 { top: 5px; left: 10px; transform: rotate(15deg); }
+
+.waves {
+  font-size: 1rem;
+  color: #4682B4;
+  margin-top: 20px;
+}
+
+/* Bottom Left: Palm Tree */
+.shield-bottom-left {
+  background: linear-gradient(135deg, #228B22 0%, #90EE90 100%);
+}
+
+.palm-tree {
+  position: relative;
+  text-align: center;
+}
+
+.palm-trunk {
+  width: 4px;
+  height: 20px;
+  background: #8B4513;
+  margin: 0 auto;
+}
+
+.palm-fronds {
+  font-size: 1.5rem;
+  margin-top: -15px;
+  color: #006400;
+}
+
+.palm-fruits {
+  font-size: 0.8rem;
+  margin-top: -10px;
+}
+
+/* Bottom Right: Cultural Symbols */
+.shield-bottom-right {
+  background: linear-gradient(135deg, #DEB887 0%, #F5DEB3 100%);
+}
+
+.cultural-symbols {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.symbol {
+  font-size: 1rem;
+  color: #8B4513;
+  font-weight: bold;
+}
+
+/* Elephant Tusks */
+.seal-tusk {
+  position: absolute;
+  width: 15%;
+  height: 40%;
+  background: linear-gradient(45deg, #F5F5DC 0%, #FFFAF0 50%, #F5F5DC 100%);
+  border-radius: 50% 20% 50% 80%;
+  border: 2px solid #DDD;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.seal-tusk-left {
+  left: 5%;
+  top: 30%;
+  transform: rotate(-30deg);
+}
+
+.seal-tusk-right {
+  right: 5%;
+  top: 30%;
+  transform: rotate(30deg) scaleX(-1);
+}
+
+/* Grass at Bottom */
+.seal-grass {
+  position: absolute;
+  bottom: 20%;
+  left: 20%;
+  right: 20%;
+  height: 8%;
+  background: linear-gradient(to top, #228B22 0%, #32CD32 50%, #90EE90 100%);
+  border-radius: 50px 50px 0 0;
+}
+
+/* Banner */
+.seal-banner {
+  position: absolute;
+  bottom: 8%;
+  left: 15%;
+  right: 15%;
+  height: 12%;
+  background: linear-gradient(45deg, #DC143C 0%, #FF6347 50%, #DC143C 100%);
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 3px solid #B8860B;
+}
+
+.banner-left, .banner-right {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.banner-center {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.1em;
+  text-align: center;
+  flex: 1;
+}
+
+/* Enter Button Styles */
+.enter-button {
+  position: relative;
+  padding: 1.5rem 4rem;
+  background: linear-gradient(135deg, var(--akwa-orange), var(--akwa-green));
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(255, 127, 0, 0.3);
+  border: 4px solid white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.enter-button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 20px 50px rgba(255, 127, 0, 0.4);
+  background: linear-gradient(135deg, var(--akwa-orange-light), var(--akwa-green-light));
+}
+
+.enter-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.enter-button:hover::before {
+  left: 100%;
+}
+
+.enter-arrow {
+  width: 2rem;
+  height: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.enter-button:hover .enter-arrow {
+  transform: translateX(0.5rem);
+}
+
+/* Office Selection Message */
+.office-selection-message {
+  text-align: center;
+  background: linear-gradient(135deg, rgba(255, 127, 0, 0.05), rgba(255, 127, 0, 0.1));
+  border: 2px solid rgba(255, 127, 0, 0.2);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  max-width: 28rem;
+}
+
+.message-icon {
+  width: 4rem;
+  height: 4rem;
+  color: rgba(255, 127, 0, 0.4);
+  margin: 0 auto 1rem auto;
+}
+
+.message-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--akwa-orange);
+  margin-bottom: 0.5rem;
+}
+
+.message-text {
+  color: var(--akwa-orange);
+  opacity: 0.8;
+}
+
+/* Responsive Design - Updated for constrained logo */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  
+  .header-title {
+    font-size: 1.75rem;
+  }
+  
+  .header-subtitle {
+    font-size: 1rem;
+  }
+  
+  .selected-office-title {
+    font-size: 2rem;
+  }
+  
+  /* Updated responsive sizes for image logo - more conservative */
+  .state-logo-image-container {
+    width: 16rem;
+    height: 16rem;
+    max-width: 85vw;
+    max-height: 40vh;
+    margin: 0 auto 1.5rem auto;
+  }
+  
+  .enter-button {
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .state-logo-image-container {
+    width: 12rem;
+    height: 12rem;
+    max-width: 80vw;
+    max-height: 35vh;
+    margin: 0 auto 1rem auto;
+  }
+  
+  .header-title {
+    font-size: 1.5rem;
+  }
+  
+  .selected-office-title {
+    font-size: 1.5rem;
+  }
+  
+  .enter-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .state-logo-image-container {
+    width: 10rem;
+    height: 10rem;
+    max-width: 75vw;
+    max-height: 30vh;
+  }
+  
+  .header-title {
+    font-size: 1.25rem;
+  }
+  
+  .selected-office-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Button hover effects */
+@keyframes buttonPulse {
+  0% {
+    box-shadow: 0 10px 30px rgba(255, 127, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 15px 40px rgba(255, 127, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 10px 30px rgba(255, 127, 0, 0.3);
+  }
+}
+
+.enter-button {
+  animation: buttonPulse 3s ease-in-out infinite;
 }
