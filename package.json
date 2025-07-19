@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Budget Office Database Management System for Akwa Ibom State government - React TypeScript application for financial data management and staff administration",
   "private": true,
-  "homepage": "https://DevalSam.github.io/akwa-ibom-budget-office-system",
+  "homepage": ".",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DevalSam/akwa-ibom-budget-office-system.git"
@@ -40,7 +40,7 @@
     "lucide-react": "^0.522.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
