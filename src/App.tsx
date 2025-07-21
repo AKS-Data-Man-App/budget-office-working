@@ -131,46 +131,7 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AppProvider>
-      <div className="min-h-screen">
-        {/* App Header - Government Branding */}
-        <header className="bg-gradient-to-r from-green-600 to-orange-600 text-white shadow-lg">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <img 
-                  src="/src/assets/images/akwa-ibom-state-logo.jpg" 
-                  alt="Akwa Ibom State Logo" 
-                  className="h-10 w-10 rounded-full"
-                />
-                <div>
-                  <h1 className="text-xl font-bold">Akwa Ibom State</h1>
-                  <p className="text-sm opacity-90">Budget Office Database Management System</p>
-                </div>
-              </div>
-              
-              {/* User Info & Logout */}
-              <UserInfo />
-            </div>
-          </div>
-        </header>
-        
-        {/* Main Application Content */}
-        <main>
-          <AppContent />
-        </main>
-        
-        {/* App Footer */}
-        <footer className="bg-gray-800 text-white py-4 mt-auto">
-          <div className="container mx-auto px-4 text-center">
-            <p className="text-sm">
-              © 2025 Akwa Ibom State Government - Budget Office Database Management System
-            </p>
-            <p className="text-xs text-gray-400 mt-1">
-              "The Land of Promise" - Secure • Efficient • Transparent
-            </p>
-          </div>
-        </footer>
-      </div>
+      <AppContent />
     </AppProvider>
   );
 };
