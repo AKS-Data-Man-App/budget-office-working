@@ -5,7 +5,7 @@ import {
   Eye, Phone, Mail, Award, Calendar, Clock, 
   X, User, MapPin, Briefcase, FileText 
 } from 'lucide-react';
-import { Staff } from '../../types/staff';
+import { Staff } from '../../types/auth.types';
 import { 
   getStatusBadge, 
   calculateYearsOfService, 
@@ -118,7 +118,7 @@ const StaffTable: React.FC<StaffTableProps> = ({
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {sortedStaff.map((staffMember) => {
-                const statusBadge = getStatusBadge(staffMember.status);
+                const statusBadge = getStatusBadge(staffMember.status as any);
                 const yearsOfService = calculateYearsOfService(staffMember.dateOfEmployment);
                 
                 return (
@@ -377,8 +377,8 @@ const StaffTable: React.FC<StaffTableProps> = ({
                     <div className="mb-4">
                       <label className="text-sm font-medium text-gray-500">Current Status</label>
                       <div className="mt-1">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(selectedStaff.status).className}`}>
-                          {getStatusBadge(selectedStaff.status).label}
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(selectedStaff.status as any).className}`}>
+                          {getStatusBadge(selectedStaff.status as any).label}
                         </span>
                       </div>
                     </div>
