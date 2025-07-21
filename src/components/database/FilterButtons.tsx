@@ -5,7 +5,7 @@ import {
   Users, Award, Calendar, UserCheck, Clock, UserX, 
   Briefcase, RotateCcw, AlertTriangle, CheckCircle 
 } from 'lucide-react';
-import { FilterType, Staff } from '../../types/staff';
+import { FilterType, Staff } from '../../types/auth.types';
 import { getFilterCount } from '../../utils/staffUtils';
 
 interface FilterButtonsProps {
