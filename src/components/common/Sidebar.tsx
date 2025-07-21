@@ -1,5 +1,3 @@
-// src/components/common/Sidebar.tsx
-
 import React from 'react';
 import { Building2, Users, FileText, Settings } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';

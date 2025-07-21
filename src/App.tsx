@@ -10,7 +10,7 @@ import { UserRole } from './types/auth.types';
 import LoginPage from './components/pages/LoginPage';
 import HomePage from './components/pages/HomePage';
 import BudgetOfficePage from './components/pages/BudgetOfficePage';
-import DatabasePage from './components/pages/DatabasePage';
+// import DatabasePage from './components/pages/DatabasePage';
 import DirectorDashboard from './components/pages/DirectorDashboard';
 import ICTDashboard from './components/pages/ICTDashboard';
 import StaffDashboard from './components/pages/StaffDashboard';
@@ -69,7 +69,7 @@ const AppContent: React.FC = () => {
         return <BudgetOfficePage />;
         
       case 'database':
-        return <DatabasePage />;
+        // return <DatabasePage />;
         
       case 'login':
         return <LoginPage />;

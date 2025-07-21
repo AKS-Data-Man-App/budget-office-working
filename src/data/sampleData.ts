@@ -1,6 +1,4 @@
-// src/data/sampleData.ts
-
-import { Staff } from '../types/staff';
+import { Staff } from '../types/auth.types';
 
 export const sampleStaff: Staff[] = [
   {
@@ -12,7 +10,6 @@ export const sampleStaff: Staff[] = [
     department: "Planning & Research",
     employeeId: "AKS001",
     email: "adebayo.johnson@aksgov.ng",
-    phone: "+234 803 123 4567",
     phoneNumber: "+234 803 123 4567",
     dateOfEmployment: "2018-03-15",
     hireDate: "2018-03-15",
@@ -45,7 +42,6 @@ export const sampleStaff: Staff[] = [
     department: "Budget Implementation",
     employeeId: "AKS002",
     email: "blessing.udoh@aksgov.ng",
-    phone: "+234 805 234 5678",
     phoneNumber: "+234 805 234 5678",
     dateOfEmployment: "2020-01-20",
     hireDate: "2020-01-20",
@@ -80,7 +76,6 @@ export const sampleStaff: Staff[] = [
     department: "Administration",
     employeeId: "AKS003",
     email: "emmanuel.okon@aksgov.ng",
-    phone: "+234 807 345 6789",
     phoneNumber: "+234 807 345 6789",
     dateOfEmployment: "1995-08-10",
     hireDate: "1995-08-10",
@@ -114,7 +109,6 @@ export const sampleStaff: Staff[] = [
     department: "Budget Monitoring",
     employeeId: "AKS004",
     email: "grace.akpan@aksgov.ng",
-    phone: "+234 809 456 7890",
     phoneNumber: "+234 809 456 7890",
     dateOfEmployment: "2019-06-05",
     hireDate: "2019-06-05",
@@ -147,7 +141,6 @@ export const sampleStaff: Staff[] = [
     department: "Data Management",
     employeeId: "AKS005",
     email: "samuel.etim@aksgov.ng",
-    phone: "+234 811 567 8901",
     phoneNumber: "+234 811 567 8901",
     dateOfEmployment: "2021-02-14",
     hireDate: "2021-02-14",
@@ -180,7 +173,6 @@ export const sampleStaff: Staff[] = [
     department: "Finance",
     employeeId: "AKS006",
     email: "victoria.essien@aksgov.ng",
-    phone: "+234 813 678 9012",
     phoneNumber: "+234 813 678 9012",
     dateOfEmployment: "2017-05-30",
     hireDate: "2017-05-30",
@@ -213,7 +205,6 @@ export const sampleStaff: Staff[] = [
     department: "Coordination",
     employeeId: "AKS007",
     email: "david.umoh@aksgov.ng",
-    phone: "+234 815 789 0123",
     phoneNumber: "+234 815 789 0123",
     dateOfEmployment: "2016-11-12",
     hireDate: "2016-11-12",
@@ -248,7 +239,6 @@ export const sampleStaff: Staff[] = [
     department: "Policy Analysis",
     employeeId: "AKS008",
     email: "mary.bassey@aksgov.ng",
-    phone: "+234 817 890 1234",
     phoneNumber: "+234 817 890 1234",
     dateOfEmployment: "2014-09-25",
     hireDate: "2014-09-25",
@@ -282,7 +272,6 @@ export const sampleStaff: Staff[] = [
     department: "Strategic Planning",
     employeeId: "AKS009",
     email: "john.udo@aksgov.ng",
-    phone: "+234 819 901 2345",
     phoneNumber: "+234 819 901 2345",
     dateOfEmployment: "2012-04-18",
     hireDate: "2012-04-18",
@@ -315,7 +304,6 @@ export const sampleStaff: Staff[] = [
     department: "Research & Development",
     employeeId: "AKS010",
     email: "faith.williams@aksgov.ng",
-    phone: "+234 821 012 3456",
     phoneNumber: "+234 821 012 3456",
     dateOfEmployment: "2022-07-01",
     hireDate: "2022-07-01",
