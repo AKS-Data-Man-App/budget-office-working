@@ -1,7 +1,15 @@
 // src/utils/staffUtils.ts
 
-import { Staff, FilterType, StaffStatusBadge, StaffStatus } from '../types/auth.types';
+import { Staff, FilterType } from '../types/auth.types';
 
+// Define the types locally for now
+type StaffStatus = 'active' | 'on-leave' | 'due-for-promotion' | 'due-for-time-off' | 'returning-from-leave' | 'due-for-retirement' | 'retired' | 'resigned' | 'dismissed' | 'on-special-duty' | 'special-duty';
+
+interface StaffStatusBadge {
+  status: string;
+  className: string;
+  label: string;
+}
 /**
  * Filter staff based on the selected filter type
  */
