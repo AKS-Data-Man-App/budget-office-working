@@ -1,5 +1,4 @@
 // src/components/common/Header.tsx
-
 import React from 'react';
 import { ArrowLeft, LogOut, User } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
@@ -17,7 +16,9 @@ const Header: React.FC<HeaderProps> = ({
   showBackButton = false,
   onBackClick
 }) => {
-  const { currentUser, handleSignOut } = useAppContext();
+  const { state, signOut } = useAppContext();
+  const currentUser = state.user;
+  const handleSignOut = signOut;
 
   const handleBack = () => {
     if (onBackClick) {
@@ -58,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({
                   <p className="text-sm font-medium">
                     {currentUser.firstName} {currentUser.lastName}
                   </p>
-                  <p className="text-xs text-green-100">{currentUser.department}</p>
+                  <p className="text-xs text-green-100">{currentUser.office}</p>
                 </div>
               </div>
               
