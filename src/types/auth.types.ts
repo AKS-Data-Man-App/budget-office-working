@@ -254,6 +254,77 @@ export type AppAction =
   | { type: 'SET_FILTER'; payload: string };
 
 // ===================================================================
+// LEGACY STAFF TYPES (For DatabasePage compatibility)
+// ===================================================================
+
+// Legacy Staff type for existing components
+export interface Staff {
+  id: string;
+  employeeId: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  email: string;
+  phoneNumber: string;
+  department: string;
+  position: string;
+  grade: string;
+  step: number;
+  hireDate: string;
+  dateOfBirth: string;
+  dateOfEmployment: string;
+  gender: 'Male' | 'Female';
+  maritalStatus: 'Single' | 'Married' | 'Divorced' | 'Widowed';
+  address: string;
+  emergencyContact: {
+    name: string;
+    phone: string;
+    relationship: string;
+  };
+  status: 'active' | 'on-leave' | 'due-for-promotion' | 'due-for-time-off' | 'returning-from-leave' | 'due-for-retirement' | 'retired' | 'resigned' | 'dismissed' | 'on-special-duty' | 'special-duty';
+  leaveBalance: number;
+  leaveStartDate?: string;
+  leaveEndDate?: string;
+  lastPromotionDate?: string;
+  nextPromotionDue?: string;
+  promotionDue?: boolean;
+  timeOffDue?: boolean;
+  retirementDate?: string;
+  retirementDue?: boolean;
+  salaryGrade: string;
+  bankDetails?: {
+    accountNumber: string;
+    bankName: string;
+    accountName: string;
+  };
+  pensionId?: string;
+  taxId?: string;
+  profileImage?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Filter types for staff filtering
+export type FilterType = 
+  | 'all'
+  | 'due-for-promotion'
+  | 'promotion-due'
+  | 'due-for-time-off'
+  | 'timeoff-due'
+  | 'on-leave'
+  | 'returning-from-leave'
+  | 'returning-leave'
+  | 'due-for-retirement'
+  | 'retirement-due'
+  | 'retired'
+  | 'resigned'
+  | 'dismissed'
+  | 'on-special-duty'
+  | 'special-duty';
+
+// ===================================================================
 // API RESPONSE TYPES
 // ===================================================================
 

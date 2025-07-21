@@ -6,7 +6,7 @@ import { useAppContext } from '../../context/AppContext';
 import { filterStaff, searchStaff, getStaffStats } from '../../utils/staffUtils';
 import FilterButtons from '../database/FilterButtons';
 import StaffTable from '../database/StaffTable';
-import { Staff, FilterType } from '../../types/staff';
+import { Staff, FilterType } from '../../types/auth.types';
 
 const DatabasePage: React.FC = () => {
   const { 
