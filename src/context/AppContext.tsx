@@ -38,6 +38,13 @@ interface AppContextType {
   // Utility methods
   checkAuthentication: () => Promise<void>;
   navigateToRoleDashboard: (role: UserRole) => void;
+  
+  // Legacy compatibility for existing frontend flow
+  selectedOffice: string;
+  setSelectedOffice: (office: string) => void;
+  setCurrentPage: (page: AppPage | 'home' | 'budget-office' | 'database') => void;
+  isSignedIn: boolean;
+  currentUser: User | null;
 }
 
 // ===================================================================
@@ -57,7 +64,8 @@ const initialState: AppState = {
   token: null,
   
   // Navigation
-  currentPage: 'login',
+  currentPage: 'home',
+  selectedOffice: '',
   
   // Data
   staffData: [],
@@ -92,11 +100,14 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case 'LOGOUT':
       return {
         ...initialState,
-        currentPage: 'login'
+        currentPage: 'home'
       };
     
     case 'SET_PAGE':
       return { ...state, currentPage: action.payload };
+    
+    case 'SET_OFFICE':
+      return { ...state, selectedOffice: action.payload };
     
     case 'SET_STAFF_DATA':
       return { 
@@ -386,6 +397,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [state.staffData, state.searchTerm, state.currentFilter]);
 
   // ===================================================================
+  // LEGACY COMPATIBILITY METHODS
+  // ===================================================================
+
+  const setSelectedOffice = (office: string): void => {
+    dispatch({ type: 'SET_OFFICE', payload: office });
+  };
+
+  const setCurrentPage = (page: AppPage | 'home' | 'budget-office' | 'database'): void => {
+    dispatch({ type: 'SET_PAGE', payload: page as AppPage });
+  };
+
+  // ===================================================================
   // CONTEXT VALUE
   // ===================================================================
 
@@ -399,7 +422,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     createUser,
     approveUser,
     checkAuthentication,
-    navigateToRoleDashboard
+    navigateToRoleDashboard,
+    // Legacy compatibility
+    selectedOffice: state.selectedOffice,
+    setSelectedOffice,
+    setCurrentPage,
+    isSignedIn: state.isAuthenticated,
+    currentUser: state.user
   };
 
   return (
