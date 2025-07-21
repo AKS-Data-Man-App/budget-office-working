@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, User, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
-import { SignInFormData } from '../../types/staff';
+import { SignInFormData } from '../../types/auth.types';
 
 const SignInForm: React.FC = () => {
   const { signIn, state } = useAppContext();
