@@ -9,7 +9,7 @@ import { UserRole } from './types/auth.types';
 // Import page components
 import LoginPage from './components/pages/LoginPage';
 import HomePage from './components/pages/HomePage';
-import BudgetOfficePage from './components/pages/BudgetOfficePage';
+// import BudgetOfficePage from './components/pages/BudgetOfficePage';
 // import DatabasePage from './components/pages/DatabasePage';
 import DirectorDashboard from './components/pages/DirectorDashboard';
 import ICTDashboard from './components/pages/ICTDashboard';
@@ -66,7 +66,7 @@ const AppContent: React.FC = () => {
         return <HomePage />;
         
       case 'budget-office':
-        return <BudgetOfficePage />;
+        // return <BudgetOfficePage />;
         
       case 'database':
         // return <DatabasePage />;
