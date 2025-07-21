@@ -206,6 +206,9 @@ export interface UsersListResponse {
 
 // Application pages for role-based routing
 export type AppPage = 
+  | 'home'
+  | 'budget-office' 
+  | 'database'
   | 'login'
   | 'director-dashboard'
   | 'ict-dashboard' 
@@ -220,6 +223,7 @@ export interface AppState {
   
   // Navigation
   currentPage: AppPage;
+  selectedOffice: string;
   
   // Data
   staffData: StaffRecord[];
@@ -240,6 +244,7 @@ export type AppAction =
   | { type: 'LOGIN_SUCCESS'; payload: { user: User; token: string } }
   | { type: 'LOGOUT' }
   | { type: 'SET_PAGE'; payload: AppPage }
+  | { type: 'SET_OFFICE'; payload: string }
   | { type: 'SET_STAFF_DATA'; payload: StaffRecord[] }
   | { type: 'SET_FILTERED_STAFF'; payload: StaffRecord[] }
   | { type: 'SET_ALL_USERS'; payload: User[] }

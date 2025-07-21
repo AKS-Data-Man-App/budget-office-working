@@ -8,6 +8,9 @@ import { UserRole } from './types/auth.types';
 
 // Import page components
 import LoginPage from './components/pages/LoginPage';
+import HomePage from './components/pages/HomePage';
+import BudgetOfficePage from './components/pages/BudgetOfficePage';
+import DatabasePage from './components/pages/DatabasePage';
 import DirectorDashboard from './components/pages/DirectorDashboard';
 import ICTDashboard from './components/pages/ICTDashboard';
 import StaffDashboard from './components/pages/StaffDashboard';
@@ -59,6 +62,15 @@ const AppContent: React.FC = () => {
   // Render current page based on state
   const renderCurrentPage = () => {
     switch (state.currentPage) {
+      case 'home':
+        return <HomePage />;
+        
+      case 'budget-office':
+        return <BudgetOfficePage />;
+        
+      case 'database':
+        return <DatabasePage />;
+        
       case 'login':
         return <LoginPage />;
       
@@ -84,7 +96,7 @@ const AppContent: React.FC = () => {
         );
       
       default:
-        return <LoginPage />;
+        return <HomePage />;
     }
   };
 
