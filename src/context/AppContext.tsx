@@ -247,7 +247,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const token = apiService.getToken();
     
     if (!token) {
-      dispatch({ type: 'SET_PAGE', payload: 'login' });
+      // dispatch({ type: 'SET_PAGE', payload: 'login' });
       return;
     }
 
