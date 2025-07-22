@@ -303,20 +303,22 @@ const BudgetStaffTab: React.FC<{ staffData: any[] }> = ({ staffData }) => (
   </div>
 );
 
-// Government Database Tab
+// Government Database Tab - Using Real Backend Data
 const GovernmentDatabaseTab: React.FC = () => {
-  const mockData = [
-    { id: 1, name: 'Aniekan Udoh', ministry: 'Education', department: 'Secondary Education', rank: 'Teacher II', grade: 'GL-09', lga: 'Uyo', status: 'Active' },
-    { id: 2, name: 'Eno Bassey', ministry: 'Health', department: 'General Hospital', rank: 'Nurse I', grade: 'GL-11', lga: 'Ikot Ekpene', status: 'Active' },
-    { id: 3, name: 'Ubong Etim', ministry: 'Works', department: 'Road Maintenance', rank: 'Engineer II', grade: 'GL-13', lga: 'Eket', status: 'Active' },
-    { id: 4, name: 'Grace Akpan', ministry: 'Agriculture', department: 'Extension Services', rank: 'ADP Officer', grade: 'GL-10', lga: 'Abak', status: 'Active' },
-    { id: 5, name: 'Samuel Okon', ministry: 'Finance', department: 'Treasury', rank: 'Accountant I', grade: 'GL-12', lga: 'Uyo', status: 'Active' }
-  ];
-
+  const { state } = useAppContext();
+  
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: 0 }}>Akwa Ibom State Government Database</h3>
+        <div>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: 0 }}>
+            Staff Nominal Roll of State Budget Office
+          </h3>
+          <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0.25rem 0 0 0' }}>
+            Governor's Office Annex Uyo - July 2025
+          </p>
+        </div>
         <div style={{
           background: 'linear-gradient(135deg, var(--akwa-orange) 0%, var(--akwa-green) 100%)',
           color: 'white',
@@ -325,49 +327,176 @@ const GovernmentDatabaseTab: React.FC = () => {
           fontSize: '0.875rem',
           fontWeight: '500'
         }}>
-          15,420 Total Workers
+          {state.staffData.length} Total Staff
         </div>
       </div>
       
       <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: 0 }}>
-        Complete database of all government employees across all ministries, departments, and agencies.
+        Official government staff database with complete service records for Akwa Ibom State - "The Land of Promise"
       </p>
 
-      <div style={{ backgroundColor: 'white', border: '1px solid #E5E7EB', borderRadius: '0.5rem', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ backgroundColor: '#F9FAFB' }}>
-            <tr>
-              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Name</th>
-              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Ministry</th>
-              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Department</th>
-              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Rank</th>
-              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Grade</th>
-              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockData.map((worker, index) => (
-              <tr key={worker.id} style={{ borderTop: index > 0 ? '1px solid #E5E7EB' : 'none' }}>
-                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827', fontWeight: '500' }}>{worker.name}</td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{worker.ministry}</td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{worker.department}</td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{worker.rank}</td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{worker.grade}</td>
-                <td style={{ padding: '1rem' }}>
-                  <span style={{
-                    padding: '0.25rem 0.5rem',
-                    fontSize: '0.75rem',
-                    borderRadius: '9999px',
-                    backgroundColor: worker.status === 'Active' ? '#DCFCE7' : '#FEF3C7',
-                    color: worker.status === 'Active' ? '#166534' : '#92400E'
-                  }}>
-                    {worker.status}
-                  </span>
-                </td>
+      {/* Search Controls */}
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          placeholder="Search by name, rank, department, or LGA..."
+          style={{
+            flex: 1,
+            minWidth: '300px',
+            border: '1px solid #D1D5DB',
+            borderRadius: '0.5rem',
+            padding: '0.5rem 0.75rem',
+            fontSize: '0.875rem'
+          }}
+        />
+        
+        <select
+          style={{
+            border: '1px solid #D1D5DB',
+            borderRadius: '0.5rem',
+            padding: '0.5rem 0.75rem',
+            fontSize: '0.875rem',
+            minWidth: '120px'
+          }}
+        >
+          <option value="all">All Departments</option>
+          <option value="Budget Department">Budget Department</option>
+          <option value="Finance Department">Finance Department</option>
+        </select>
+
+        <select
+          style={{
+            border: '1px solid #D1D5DB',
+            borderRadius: '0.5rem',
+            padding: '0.5rem 0.75rem',
+            fontSize: '0.875rem',
+            minWidth: '100px'
+          }}
+        >
+          <option value="all">All LGAs</option>
+          <option value="Uyo">Uyo</option>
+          <option value="Eket">Eket</option>
+          <option value="Ikot Ekpene">Ikot Ekpene</option>
+        </select>
+
+        <button
+          style={{
+            background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+            color: 'white',
+            padding: '0.5rem 1rem',
+            borderRadius: '0.5rem',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '0.875rem',
+            fontWeight: '500'
+          }}
+        >
+          🔍 Search
+        </button>
+      </div>
+
+      {/* Official Government Database Table */}
+      <div style={{
+        backgroundColor: 'white',
+        border: '1px solid #E5E7EB',
+        borderRadius: '0.5rem',
+        overflow: 'hidden'
+      }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+            <thead style={{ backgroundColor: '#F9FAFB' }}>
+              <tr>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>S/N</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Name of Officer</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Sex</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Date of Birth</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Date of First Appointment</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Date of Confirmation</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Date of Last Promotion</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Rank</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Grade Level</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Step</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Educational Qualification</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>LGA</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Date of Retirement</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase', borderRight: '1px solid #E5E7EB' }}>Department</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Remarks</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {state.staffData.map((staff, index) => (
+                <tr key={staff.sn} style={{ borderTop: index > 0 ? '1px solid #E5E7EB' : 'none' }}>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.sn}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827', fontWeight: '500' }}>{staff.nameOfOfficer}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.sex}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.dateOfBirth}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.dateOfFirstAppointment}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.dateOfConfirmation}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.dateOfLastPromotion}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.rank}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827', fontWeight: '500' }}>
+                    <span style={{
+                      backgroundColor: '#F0FDF4',
+                      color: 'var(--akwa-green)',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '0.75rem'
+                    }}>
+                      {staff.gradeLevel}
+                    </span>
+                  </td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.step}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827', fontSize: '0.8rem' }}>{staff.educationalQualification}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.lga}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.dateOfRetirement}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', borderRight: '1px solid #E5E7EB', color: '#111827' }}>{staff.department}</td>
+                  <td style={{ padding: '0.75rem 0.5rem', color: '#111827', fontSize: '0.8rem' }}>
+                    <span style={{
+                      backgroundColor: staff.remarks?.toLowerCase().includes('retirement') ? '#FEF3C7' : 
+                                     staff.remarks?.toLowerCase().includes('leave') ? '#DBEAFE' : '#F0FDF4',
+                      color: staff.remarks?.toLowerCase().includes('retirement') ? '#92400E' : 
+                             staff.remarks?.toLowerCase().includes('leave') ? '#1E40AF' : '#166534',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '0.75rem'
+                    }}>
+                      {staff.remarks}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Footer Info */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginTop: '1rem',
+        padding: '1rem',
+        backgroundColor: '#F9FAFB',
+        borderRadius: '0.5rem',
+        fontSize: '0.875rem'
+      }}>
+        <div>
+          <p style={{ margin: 0, color: '#374151', fontWeight: '500' }}>
+            Akwa Ibom State - "The Land of Promise"
+          </p>
+          <p style={{ margin: 0, color: '#6B7280', fontSize: '0.8rem' }}>
+            Official Staff Database • Budget Office • Governor's Office Annex Uyo
+          </p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <p style={{ margin: 0, color: '#374151', fontWeight: '500' }}>
+            Generated: {new Date().toLocaleDateString()}
+          </p>
+          <p style={{ margin: 0, color: '#6B7280', fontSize: '0.8rem' }}>
+            Total Records: {state.staffData.length}
+          </p>
+        </div>
       </div>
     </div>
   );
