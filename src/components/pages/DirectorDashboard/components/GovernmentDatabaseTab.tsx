@@ -44,7 +44,7 @@ const GovernmentDatabaseTab: React.FC = () => {
     return { label: 'Active', variant: 'default' as const };
   };
 
-  // Table columns matching your backend structure
+  // Table columns matching ALL fields from your backend API
   const columns: TableColumn[] = [
     {
       key: 'sn',
@@ -64,10 +64,42 @@ const GovernmentDatabaseTab: React.FC = () => {
       )
     },
     {
+      key: 'dates',
+      header: 'Birth & Age',
+      width: '120px',
+      render: (_, staff: any) => {
+        const age = new Date().getFullYear() - new Date(staff.dateOfBirth).getFullYear();
+        return (
+          <div>
+            <div style={{ fontSize: '0.875rem', color: '#111827' }}>{staff.dateOfBirth}</div>
+            <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>Age: {age}</div>
+          </div>
+        );
+      }
+    },
+    {
+      key: 'appointment',
+      header: 'First Appointment',
+      width: '130px',
+      render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{staff.dateOfFirstAppointment}</div>
+    },
+    {
+      key: 'confirmation',
+      header: 'Date of Confirmation',
+      width: '140px',
+      render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{staff.dateOfConfirmation}</div>
+    },
+    {
+      key: 'promotion',
+      header: 'Last Promotion',
+      width: '130px',
+      render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{staff.dateOfLastPromotion}</div>
+    },
+    {
       key: 'rank',
       header: 'Rank',
       width: '180px',
-      render: (rank: string) => <div style={{ fontSize: '0.875rem', color: '#111827' }}>{rank}</div>
+      render: (rank: string) => <div style={{ fontSize: '0.875rem', color: '#111827', fontWeight: '500' }}>{rank}</div>
     },
     {
       key: 'grade',
@@ -81,16 +113,16 @@ const GovernmentDatabaseTab: React.FC = () => {
       )
     },
     {
+      key: 'education',
+      header: 'Educational Qualification',
+      width: '220px',
+      render: (qualification: string) => <div style={{ fontSize: '0.8rem', color: '#374151', lineHeight: '1.3' }}>{qualification}</div>
+    },
+    {
       key: 'department',
       header: 'Department',
       width: '160px',
       render: (department: string) => <div style={{ fontSize: '0.875rem', color: '#374151' }}>{department}</div>
-    },
-    {
-      key: 'appointment',
-      header: 'First Appointment',
-      width: '130px',
-      render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{staff.dateOfFirstAppointment}</div>
     },
     {
       key: 'retirement',
@@ -99,25 +131,28 @@ const GovernmentDatabaseTab: React.FC = () => {
       render: (_, staff: any) => {
         const isNear = new Date(staff.dateOfRetirement).getFullYear() <= new Date().getFullYear() + 2;
         return (
-          <div style={{ fontSize: '0.875rem', color: isNear ? '#EF4444' : '#6B7280' }}>
+          <div style={{ fontSize: '0.875rem', color: isNear ? '#EF4444' : '#6B7280', fontWeight: isNear ? '500' : '400' }}>
             {staff.dateOfRetirement}
           </div>
         );
       }
     },
     {
-      key: 'education',
-      header: 'Education',
+      key: 'remarks',
+      header: 'Remarks',
       width: '200px',
-      render: (qualification: string) => <div style={{ fontSize: '0.8rem', color: '#374151' }}>{qualification}</div>
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      width: '130px',
-      render: (_, staff: any) => {
-        const status = getStatusFromRemarks(staff.remarks);
-        return <Badge variant={status.variant} size="sm">{status.label}</Badge>;
+      render: (remarks: string, staff: any) => {
+        const status = getStatusFromRemarks(remarks);
+        return (
+          <div>
+            <Badge variant={status.variant} size="sm" style={{ marginBottom: '0.25rem' }}>
+              {status.label}
+            </Badge>
+            <div style={{ fontSize: '0.75rem', color: '#6B7280', lineHeight: '1.3' }}>
+              {remarks}
+            </div>
+          </div>
+        );
       }
     }
   ];
