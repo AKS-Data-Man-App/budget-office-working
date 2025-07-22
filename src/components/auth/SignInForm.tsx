@@ -135,26 +135,7 @@ const SignInForm: React.FC = () => {
         )}
       </button>
 
-      {/* Demo Credential Buttons */}
-      <div className="border-t border-gray-200 pt-4">
-        <p className="text-xs text-gray-500 text-center mb-3">Quick Demo Access:</p>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials('admin')}
-            className="px-3 py-2 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
-          >
-            Admin Demo
-          </button>
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials('officer')}
-            className="px-3 py-2 text-xs bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
-          >
-            Officer Demo
-          </button>
-        </div>
-      </div>
+      
     </form>
   );
 };

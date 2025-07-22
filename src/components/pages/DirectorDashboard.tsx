@@ -1,5 +1,5 @@
 // src/components/pages/DirectorDashboard.tsx
-// Director Dashboard for ORGANIZATION_HEAD role
+// Director Dashboard using same styling approach as HomePage
 
 import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
@@ -17,46 +17,64 @@ const DirectorDashboard: React.FC = () => {
   const totalStaff = state.staffData.length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Director Dashboard</h1>
-          <p className="text-gray-600 mt-2">Akwa Ibom State Budget Office Management System</p>
+    <div style={{ minHeight: '100vh', backgroundColor: '#F9FAFB' }}>
+      {/* Header matching homepage style */}
+      <header className="akwa-header">
+        <div className="container">
+          <div style={{ textAlign: 'center' }}>
+            <h1 className="header-title">
+              Director Dashboard
+            </h1>
+            <p className="header-subtitle">
+              Akwa Ibom State Budget Office Management System
+            </p>
+          </div>
         </div>
+      </header>
 
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem 1rem' }}>
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+          gap: '1.5rem', 
+          marginBottom: '2rem' 
+        }}>
           <StatsCard
             title="Total Users"
             value={totalUsers}
-            icon={<Users className="w-6 h-6" />}
+            icon={<Users style={{ width: '1.5rem', height: '1.5rem' }} />}
             color="blue"
           />
           <StatsCard
             title="Pending Approvals"
             value={pendingApprovals.length}
-            icon={<CheckCircle className="w-6 h-6" />}
+            icon={<CheckCircle style={{ width: '1.5rem', height: '1.5rem' }} />}
             color="orange"
           />
           <StatsCard
             title="Staff Records"
             value={totalStaff}
-            icon={<FileText className="w-6 h-6" />}
+            icon={<FileText style={{ width: '1.5rem', height: '1.5rem' }} />}
             color="green"
           />
           <StatsCard
             title="Departments"
             value={2}
-            icon={<BarChart3 className="w-6 h-6" />}
+            icon={<BarChart3 style={{ width: '1.5rem', height: '1.5rem' }} />}
             color="purple"
           />
         </div>
 
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-lg shadow mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6">
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          marginBottom: '1.5rem'
+        }}>
+          <div style={{ borderBottom: '1px solid #E5E7EB' }}>
+            <nav style={{ display: 'flex', padding: '0 1.5rem' }}>
               {[
                 { key: 'overview', label: 'Overview' },
                 { key: 'users', label: 'User Management' },
@@ -66,11 +84,17 @@ const DirectorDashboard: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as any)}
-                  className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                    activeTab === tab.key
-                      ? 'border-green-500 text-green-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                  style={{
+                    padding: '1rem 0.5rem',
+                    borderBottom: activeTab === tab.key ? '2px solid var(--akwa-green)' : '2px solid transparent',
+                    fontWeight: '500',
+                    fontSize: '0.875rem',
+                    color: activeTab === tab.key ? 'var(--akwa-green)' : '#6B7280',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    marginRight: '2rem'
+                  }}
                 >
                   {tab.label}
                 </button>
@@ -79,7 +103,7 @@ const DirectorDashboard: React.FC = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="p-6">
+          <div style={{ padding: '1.5rem' }}>
             {activeTab === 'overview' && <OverviewTab />}
             {activeTab === 'users' && (
               <UsersTab 
@@ -121,21 +145,31 @@ interface StatsCardProps {
 
 const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, color }) => {
   const colorClasses = {
-    blue: 'bg-blue-500',
-    orange: 'bg-orange-500', 
-    green: 'bg-green-500',
-    purple: 'bg-purple-500'
+    blue: '#3B82F6',
+    orange: 'var(--akwa-orange)', 
+    green: 'var(--akwa-green)',
+    purple: '#8B5CF6'
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <div className="flex items-center">
-        <div className={`${colorClasses[color]} text-white p-3 rounded-lg`}>
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '0.5rem',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+      padding: '1.5rem'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{
+          backgroundColor: colorClasses[color],
+          color: 'white',
+          padding: '0.75rem',
+          borderRadius: '0.5rem'
+        }}>
           {icon}
         </div>
-        <div className="ml-4">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <div style={{ marginLeft: '1rem' }}>
+          <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#6B7280', margin: 0 }}>{title}</p>
+          <p style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', margin: '0.25rem 0 0 0' }}>{value}</p>
         </div>
       </div>
     </div>
@@ -144,16 +178,24 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, color }) => {
 
 // Overview Tab
 const OverviewTab: React.FC = () => (
-  <div className="space-y-6">
-    <h3 className="text-lg font-medium text-gray-900">System Overview</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-medium text-gray-900 mb-2">Recent Activities</h4>
-        <p className="text-sm text-gray-600">User management and system activities will appear here.</p>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: 0 }}>System Overview</h3>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+      <div style={{
+        backgroundColor: '#F9FAFB',
+        borderRadius: '0.5rem',
+        padding: '1rem'
+      }}>
+        <h4 style={{ fontWeight: '500', color: '#111827', marginBottom: '0.5rem' }}>Recent Activities</h4>
+        <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: 0 }}>User management and system activities will appear here.</p>
       </div>
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-medium text-gray-900 mb-2">System Status</h4>
-        <p className="text-sm text-green-600">All systems operational</p>
+      <div style={{
+        backgroundColor: '#F9FAFB',
+        borderRadius: '0.5rem',
+        padding: '1rem'
+      }}>
+        <h4 style={{ fontWeight: '500', color: '#111827', marginBottom: '0.5rem' }}>System Status</h4>
+        <p style={{ fontSize: '0.875rem', color: 'var(--akwa-green)', margin: 0 }}>All systems operational</p>
       </div>
     </div>
   </div>
@@ -167,48 +209,66 @@ interface UsersTabProps {
 }
 
 const UsersTab: React.FC<UsersTabProps> = ({ users, onCreateUser }) => (
-  <div className="space-y-4">
-    <div className="flex justify-between items-center">
-      <h3 className="text-lg font-medium text-gray-900">User Management</h3>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: 0 }}>User Management</h3>
       <button
         onClick={onCreateUser}
-        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+        style={{
+          background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+          color: 'white',
+          padding: '0.5rem 1rem',
+          borderRadius: '0.5rem',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          fontWeight: '500'
+        }}
       >
-        <UserPlus className="w-4 h-4" />
+        <UserPlus style={{ width: '1rem', height: '1rem' }} />
         <span>Create User</span>
       </button>
     </div>
     
-    <div className="bg-white border rounded-lg overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div style={{
+      backgroundColor: 'white',
+      border: '1px solid #E5E7EB',
+      borderRadius: '0.5rem',
+      overflow: 'hidden'
+    }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead style={{ backgroundColor: '#F9FAFB' }}>
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+            <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>User</th>
+            <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Role</th>
+            <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Status</th>
+            <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Created</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {users.map(user => (
-            <tr key={user.id}>
-              <td className="px-6 py-4 whitespace-nowrap">
+        <tbody>
+          {users.map((user, index) => (
+            <tr key={user.id} style={{ borderTop: index > 0 ? '1px solid #E5E7EB' : 'none' }}>
+              <td style={{ padding: '1rem 1.5rem' }}>
                 <div>
-                  <div className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</div>
-                  <div className="text-sm text-gray-500">{user.username}</div>
+                  <div style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827' }}>{user.firstName} {user.lastName}</div>
+                  <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{user.username}</div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.role}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`px-2 py-1 text-xs rounded-full ${
-                  user.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
-                  user.status === 'PENDING_APPROVAL' ? 'bg-yellow-100 text-yellow-800' : 
-                  'bg-gray-100 text-gray-800'
-                }`}>
+              <td style={{ padding: '1rem 1.5rem', fontSize: '0.875rem', color: '#111827' }}>{user.role}</td>
+              <td style={{ padding: '1rem 1.5rem' }}>
+                <span style={{
+                  padding: '0.25rem 0.5rem',
+                  fontSize: '0.75rem',
+                  borderRadius: '9999px',
+                  backgroundColor: user.status === 'ACTIVE' ? '#DCFCE7' : user.status === 'PENDING_APPROVAL' ? '#FEF3C7' : '#F3F4F6',
+                  color: user.status === 'ACTIVE' ? '#166534' : user.status === 'PENDING_APPROVAL' ? '#92400E' : '#374151'
+                }}>
                   {user.status}
                 </span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td style={{ padding: '1rem 1.5rem', fontSize: '0.875rem', color: '#6B7280' }}>
                 {new Date().toLocaleDateString()}
               </td>
             </tr>
@@ -227,25 +287,41 @@ interface ApprovalsTabProps {
 }
 
 const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ pendingUsers, onApprove }) => (
-  <div className="space-y-4">
-    <h3 className="text-lg font-medium text-gray-900">Pending Approvals</h3>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: 0 }}>Pending Approvals</h3>
     
     {pendingUsers.length === 0 ? (
-      <div className="text-center py-8">
-        <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-        <p className="text-gray-500">No pending approvals</p>
+      <div style={{ textAlign: 'center', padding: '2rem' }}>
+        <CheckCircle style={{ width: '3rem', height: '3rem', color: 'var(--akwa-green)', margin: '0 auto 1rem auto' }} />
+        <p style={{ color: '#6B7280', margin: 0 }}>No pending approvals</p>
       </div>
     ) : (
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {pendingUsers.map(user => (
-          <div key={user.id} className="bg-white border rounded-lg p-4 flex justify-between items-center">
+          <div key={user.id} style={{
+            backgroundColor: 'white',
+            border: '1px solid #E5E7EB',
+            borderRadius: '0.5rem',
+            padding: '1rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
             <div>
-              <h4 className="font-medium text-gray-900">{user.firstName} {user.lastName}</h4>
-              <p className="text-sm text-gray-500">{user.username} - {user.role}</p>
+              <h4 style={{ fontWeight: '500', color: '#111827', margin: '0 0 0.25rem 0' }}>{user.firstName} {user.lastName}</h4>
+              <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: 0 }}>{user.username} - {user.role}</p>
             </div>
             <button
               onClick={() => onApprove(user.id)}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+              style={{
+                backgroundColor: 'var(--akwa-green)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.5rem',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: '500'
+              }}
             >
               Approve
             </button>
@@ -262,28 +338,33 @@ interface StaffTabProps {
 }
 
 const StaffTab: React.FC<StaffTabProps> = ({ staffData }) => (
-  <div className="space-y-4">
-    <h3 className="text-lg font-medium text-gray-900">Staff Nominal Roll</h3>
-    <div className="bg-white border rounded-lg overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: 0 }}>Staff Nominal Roll</h3>
+    <div style={{
+      backgroundColor: 'white',
+      border: '1px solid #E5E7EB',
+      borderRadius: '0.5rem',
+      overflow: 'hidden'
+    }}>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead style={{ backgroundColor: '#F9FAFB' }}>
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">S/N</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rank</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grade</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>S/N</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Name</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Rank</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Grade</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '500', color: '#6B7280', textTransform: 'uppercase' }}>Department</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {staffData.map(staff => (
-              <tr key={staff.sn}>
-                <td className="px-4 py-4 text-sm text-gray-900">{staff.sn}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{staff.nameOfOfficer}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{staff.rank}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{staff.gradeLevel}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{staff.department}</td>
+          <tbody>
+            {staffData.map((staff, index) => (
+              <tr key={staff.sn} style={{ borderTop: index > 0 ? '1px solid #E5E7EB' : 'none' }}>
+                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{staff.sn}</td>
+                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{staff.nameOfOfficer}</td>
+                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{staff.rank}</td>
+                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{staff.gradeLevel}</td>
+                <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#111827' }}>{staff.department}</td>
               </tr>
             ))}
           </tbody>
@@ -316,67 +397,124 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ onClose, onCreate }) 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Create New User</h3>
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '0.5rem',
+        padding: '1.5rem',
+        width: '100%',
+        maxWidth: '28rem'
+      }}>
+        <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: '0 0 1rem 0' }}>Create New User</h3>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>First Name</label>
             <input
               type="text"
               value={formData.firstName}
               onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              style={{
+                width: '100%',
+                border: '1px solid #D1D5DB',
+                borderRadius: '0.5rem',
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.875rem'
+              }}
               required
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>Last Name</label>
             <input
               type="text"
               value={formData.lastName}
               onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              style={{
+                width: '100%',
+                border: '1px solid #D1D5DB',
+                borderRadius: '0.5rem',
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.875rem'
+              }}
               required
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>Email</label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              style={{
+                width: '100%',
+                border: '1px solid #D1D5DB',
+                borderRadius: '0.5rem',
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.875rem'
+              }}
               required
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>Role</label>
             <select
               value={formData.role}
               onChange={(e) => setFormData({...formData, role: e.target.value as UserRole})}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              style={{
+                width: '100%',
+                border: '1px solid #D1D5DB',
+                borderRadius: '0.5rem',
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.875rem'
+              }}
             >
               <option value="ICT_HEAD">ICT Head</option>
               <option value="STAFF">Staff</option>
             </select>
           </div>
           
-          <div className="flex space-x-4 pt-4">
+          <div style={{ display: 'flex', gap: '1rem', paddingTop: '1rem' }}>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50"
+              style={{
+                flex: 1,
+                border: '1px solid #D1D5DB',
+                color: '#374151',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                backgroundColor: 'white',
+                cursor: 'pointer'
+              }}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+              style={{
+                flex: 1,
+                backgroundColor: 'var(--akwa-green)',
+                color: 'white',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                border: 'none',
+                cursor: 'pointer'
+              }}
             >
               Create User
             </button>
