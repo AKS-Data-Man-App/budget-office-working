@@ -231,7 +231,11 @@ const DirectorDashboard: React.FC = () => {
       </header>
 
       {/* Beautiful Stats Overview */}
-      <div style={{ padding: '2rem', maxWidth: '1280px', margin: '0 auto' }}>
+      <div style={{ 
+        padding: activeTab === 'government-database' ? '2rem 1rem' : '2rem', 
+        maxWidth: activeTab === 'government-database' ? 'none' : '1280px', 
+        margin: '0 auto' 
+      }}>
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
@@ -286,13 +290,15 @@ const DirectorDashboard: React.FC = () => {
           borderRadius: '1rem',
           boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
           overflow: 'hidden',
-          border: '1px solid rgba(255, 255, 255, 0.5)'
+          border: '1px solid rgba(255, 255, 255, 0.5)',
+          width: activeTab === 'government-database' ? '100%' : 'auto'
         }}>
           {/* Tab Headers with Beautiful Design */}
           <div style={{
             display: 'flex',
             background: 'linear-gradient(90deg, #F8FAFC 0%, #F1F5F9 100%)',
-            borderBottom: '1px solid #E2E8F0'
+            borderBottom: '1px solid #E2E8F0',
+            overflowX: 'auto'
           }}>
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -303,7 +309,8 @@ const DirectorDashboard: React.FC = () => {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   style={{
-                    flex: 1,
+                    flex: activeTab === 'government-database' ? '0 0 auto' : '1',
+                    minWidth: activeTab === 'government-database' ? '200px' : 'auto',
                     padding: '1.25rem 1rem',
                     display: 'flex',
                     alignItems: 'center',
@@ -318,7 +325,8 @@ const DirectorDashboard: React.FC = () => {
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
                     position: 'relative',
-                    boxShadow: isActive ? '0 -2px 8px rgba(0, 0, 0, 0.1)' : 'none'
+                    boxShadow: isActive ? '0 -2px 8px rgba(0, 0, 0, 0.1)' : 'none',
+                    whiteSpace: 'nowrap'
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
@@ -359,11 +367,12 @@ const DirectorDashboard: React.FC = () => {
             })}
           </div>
 
-          {/* Tab Content with Beautiful Spacing */}
+          {/* Tab Content with Expanded Width for Government Database */}
           <div style={{ 
-            padding: '2.5rem',
+            padding: activeTab === 'government-database' ? '1.5rem 0.5rem' : '2.5rem',
             minHeight: '500px',
-            backgroundColor: 'white'
+            backgroundColor: 'white',
+            overflowX: activeTab === 'government-database' ? 'auto' : 'visible'
           }}>
             {renderTabContent()}
           </div>
