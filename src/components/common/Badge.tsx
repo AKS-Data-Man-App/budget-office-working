@@ -221,24 +221,3 @@ export const RemarksBadge: React.FC<{ remarks: string }> = ({ remarks }) => {
 
 export default Badge;
 
-// Usage Examples:
-
-// Basic badge
-// <Badge>Default</Badge>
-
-// Status badge with auto-detection
-// <StatusBadge status="ACTIVE" />
-// <StatusBadge status="PENDING_APPROVAL" />
-
-// Grade level badge
-// <GradeLevelBadge gradeLevel="GL-14" />
-
-// Custom badge
-// <Badge variant="success" size="lg" outlined>
-//   Approved
-// </Badge>
-
-// Clickable badge
-// <Badge variant="primary" onClick={() => console.log('clicked')}>
-//   Clickable
-// </Badge>
