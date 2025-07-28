@@ -1,5 +1,5 @@
 // src/components/pages/ICTDashboard/components/SystemSettingsTab.tsx
-// System Settings Tab - Compact Version
+// System Settings Tab - Fixed ESLint Errors
 
 import React, { useState } from 'react';
 import { Database, Shield, Download, Upload, RefreshCw, AlertTriangle, CheckCircle } from 'lucide-react';
@@ -17,9 +17,9 @@ const SystemSettingsTab: React.FC = () => {
         setBackupStatus('loading');
         setTimeout(() => { setBackupStatus('success'); alert('Database backup completed!'); }, 2000);
       },
-      restore: () => confirm('Are you sure you want to restore from backup? This will overwrite current data.') && alert('Restore initiated!'),
+      restore: () => window.confirm('Are you sure you want to restore from backup? This will overwrite current data.') && alert('Restore initiated!'),
       sync: () => alert('Database synchronization started!'),
-      maintenance: () => confirm('Enable maintenance mode? Users will be unable to access the system.') && alert('Maintenance mode enabled!'),
+      maintenance: () => window.confirm('Enable maintenance mode? Users will be unable to access the system.') && alert('Maintenance mode enabled!'),
       export: () => alert('System configuration exported successfully!'),
       import: () => alert('Import configuration functionality coming soon!')
     };
