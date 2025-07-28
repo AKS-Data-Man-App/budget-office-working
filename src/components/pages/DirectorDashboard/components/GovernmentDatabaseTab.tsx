@@ -1,110 +1,144 @@
 // src/components/pages/DirectorDashboard/components/GovernmentDatabaseTab.tsx
-// Government Database Tab - Director View Only (No Create Staff)
+// Enhanced Government Database Tab - Compact with Full CRUD
 
 import React, { useState, useMemo } from 'react';
-import { Search, Download, Database } from 'lucide-react';
+import { Search, Download, Database, UserPlus, Edit, Trash2, Eye } from 'lucide-react';
 import Table, { TableColumn } from '../../../common/Table';
 import Button from '../../../common/Button';
 import Badge from '../../../common/Badge';
+import Modal from '../../../common/Modal';
 import { useAppContext } from '../../../../context/AppContext';
+import CreateStaffForm from './CreateStaffForm';
 
-  const GovernmentDatabaseTab: React.FC = () => {
+const GovernmentDatabaseTab: React.FC = () => {
   const { state } = useAppContext();
   const [search, setSearch] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [lgaFilter, setLgaFilter] = useState('all');
+  const [showCreateStaff, setShowCreateStaff] = useState(false);
+  const [showEditStaff, setShowEditStaff] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Filter staff data from your backend API
+  const isICTHead = state.user?.role === 'ICT_HEAD';
+
+  // Filter staff data
   const { filteredStaff, departments, lgas } = useMemo(() => {
     const data = state.staffData || [];
-    
     const filtered = data.filter((staff: any) => {
-      const searchMatch = !search || `${staff.nameOfOfficer} ${staff.rank} ${staff.department} ${staff.lga}`.toLowerCase().includes(search.toLowerCase());
+      const searchMatch = !search || `${staff.firstName || staff.nameOfOfficer} ${staff.lastName} ${staff.rank} ${staff.department} ${staff.lga}`.toLowerCase().includes(search.toLowerCase());
       const deptMatch = departmentFilter === 'all' || staff.department === departmentFilter;
       const lgaMatch = lgaFilter === 'all' || staff.lga === lgaFilter;
       return searchMatch && deptMatch && lgaMatch;
     });
-
     const departments = Array.from(new Set(data.map((s: any) => s.department))).sort();
     const lgas = Array.from(new Set(data.map((s: any) => s.lga))).sort();
-
     return { filteredStaff: filtered, departments, lgas };
   }, [state.staffData, search, departmentFilter, lgaFilter]);
 
+  // API Helper
+  const apiCall = async (endpoint: string, method: string = 'GET', data?: any) => {
+    const token = localStorage.getItem('token');
+    const config: RequestInit = {
+      method,
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      ...(data && method !== 'GET' && { body: JSON.stringify(data) })
+    };
+    const response = await fetch(`https://budget-office-backend.onrender.com${endpoint}`, config);
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+    return response.json();
+  };
+
+  // Transform form data for API
+  const transformStaffData = (staffData: any) => ({
+    employeeId: staffData.employeeId || `AKS${Date.now()}`,
+    firstName: staffData.firstName,
+    lastName: staffData.lastName,
+    sex: staffData.sex,
+    dateOfBirth: staffData.dateOfBirth ? new Date(staffData.dateOfBirth).toISOString() : null,
+    dateOfFirstAppointment: staffData.dateOfFirstAppointment ? new Date(staffData.dateOfFirstAppointment).toISOString() : null,
+    dateOfConfirmation: staffData.dateOfConfirmation ? new Date(staffData.dateOfConfirmation).toISOString() : null,
+    dateOfLastPromotion: staffData.dateOfLastPromotion ? new Date(staffData.dateOfLastPromotion).toISOString() : null,
+    rank: staffData.rank,
+    gradeLevel: staffData.gradeLevel,
+    step: staffData.step ? parseInt(staffData.step) : null,
+    educationalQualification: staffData.educationalQualification,
+    lga: staffData.lga,
+    remarks: staffData.remarks,
+    email: staffData.email,
+    phoneNumber: staffData.phoneNumber,
+    departmentId: staffData.departmentId
+  });
+
+  // CRUD Handlers
+  const handleCRUD = async (action: string, staffData?: any, staff?: any) => {
+    if (!isICTHead && action !== 'view') {
+      alert('Only ICT Head can modify staff records');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      let result;
+
+      switch (action) {
+        case 'create':
+          result = await apiCall('/api/v1/staff', 'POST', transformStaffData(staffData));
+          alert('Staff member created successfully!');
+          setShowCreateStaff(false);
+          break;
+        case 'update':
+          result = await apiCall(`/api/v1/staff/${selectedStaff.id}`, 'PUT', transformStaffData(staffData));
+          alert('Staff member updated successfully!');
+          setShowEditStaff(false);
+          setSelectedStaff(null);
+          break;
+        case 'delete':
+          if (!window.confirm(`Delete ${staff.firstName || staff.nameOfOfficer} ${staff.lastName}?`)) return;
+          result = await apiCall(`/api/v1/staff/${staff.id}`, 'DELETE');
+          alert('Staff member deleted successfully!');
+          break;
+        case 'view':
+          result = await apiCall(`/api/v1/staff/${staff.id}`);
+          alert(`Staff: ${result.data.firstName} ${result.data.lastName}\nRank: ${result.data.rank}\nDept: ${result.data.department?.name || 'N/A'}`);
+          break;
+      }
+    } catch (error) {
+      alert(`Failed to ${action} staff: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Helper functions
-  const getGradeColor = (grade: string) => {
-    const level = parseInt(grade.replace('GL-', ''));
+  const getGradeColor = (grade: string): 'default' | 'success' | 'warning' | 'info' | 'danger' | 'primary' | 'secondary' => {
+    const level = parseInt(grade?.replace('GL-', '') || '0');
     return level >= 17 ? 'danger' : level >= 15 ? 'warning' : level >= 12 ? 'primary' : 'info';
   };
 
   const getStatusFromRemarks = (remarks: string) => {
-    if (remarks.toLowerCase().includes('retirement')) return { label: 'Due for Retirement', variant: 'warning' as const };
-    if (remarks.toLowerCase().includes('leave')) return { label: 'On Leave', variant: 'info' as const };
-    if (remarks.toLowerCase().includes('excellent')) return { label: 'Excellent', variant: 'success' as const };
+    if (remarks?.toLowerCase().includes('retirement')) return { label: 'Due for Retirement', variant: 'warning' as const };
+    if (remarks?.toLowerCase().includes('leave')) return { label: 'On Leave', variant: 'info' as const };
+    if (remarks?.toLowerCase().includes('excellent')) return { label: 'Excellent', variant: 'success' as const };
     return { label: 'Active', variant: 'default' as const };
   };
 
-  // Table columns matching ALL fields from your backend API
+  // Table columns
   const columns: TableColumn[] = [
+    { key: 'sn', header: 'S/N', width: '60px', render: (sn: number) => <span style={{ fontWeight: '500', color: '#6B7280' }}>{sn}</span> },
     {
-      key: 'sn',
-      header: 'S/N',
-      width: '60px',
-      render: (sn: number) => <span style={{ fontWeight: '500', color: '#6B7280' }}>{sn}</span>
-    },
-    {
-      key: 'officer',
-      header: 'Name of Officer',
-      width: '200px',
+      key: 'officer', header: 'Name of Officer', width: '200px',
       render: (_, staff: any) => (
         <div>
-          <div style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827' }}>{staff.nameOfOfficer}</div>
+          <div style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827' }}>{staff.firstName || staff.nameOfOfficer} {staff.lastName}</div>
           <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>{staff.sex} • {staff.lga}</div>
         </div>
       )
     },
+    { key: 'employeeId', header: 'Employee ID', width: '120px', render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#374151', fontFamily: 'monospace' }}>{staff.employeeId || 'N/A'}</div> },
+    { key: 'rank', header: 'Rank', width: '180px', render: (rank: string) => <div style={{ fontSize: '0.875rem', color: '#111827', fontWeight: '500' }}>{rank}</div> },
     {
-      key: 'dates',
-      header: 'Birth & Age',
-      width: '120px',
-      render: (_, staff: any) => {
-        const age = new Date().getFullYear() - new Date(staff.dateOfBirth).getFullYear();
-        return (
-          <div>
-            <div style={{ fontSize: '0.875rem', color: '#111827' }}>{staff.dateOfBirth}</div>
-            <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>Age: {age}</div>
-          </div>
-        );
-      }
-    },
-    {
-      key: 'appointment',
-      header: 'First Appointment',
-      width: '130px',
-      render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{staff.dateOfFirstAppointment}</div>
-    },
-    {
-      key: 'confirmation',
-      header: 'Date of Confirmation',
-      width: '140px',
-      render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{staff.dateOfConfirmation}</div>
-    },
-    {
-      key: 'promotion',
-      header: 'Last Promotion',
-      width: '130px',
-      render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>{staff.dateOfLastPromotion}</div>
-    },
-    {
-      key: 'rank',
-      header: 'Rank',
-      width: '180px',
-      render: (rank: string) => <div style={{ fontSize: '0.875rem', color: '#111827', fontWeight: '500' }}>{rank}</div>
-    },
-    {
-      key: 'grade',
-      header: 'Grade Level',
-      width: '120px',
+      key: 'grade', header: 'Grade Level', width: '120px',
       render: (_, staff: any) => (
         <div>
           <Badge variant={getGradeColor(staff.gradeLevel)} size="sm">{staff.gradeLevel}</Badge>
@@ -112,253 +146,122 @@ import { useAppContext } from '../../../../context/AppContext';
         </div>
       )
     },
+    { key: 'department', header: 'Department', width: '160px', render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#374151' }}>{staff.department?.name || staff.department}</div> },
     {
-      key: 'education',
-      header: 'Educational Qualification',
-      width: '220px',
-      render: (qualification: string) => <div style={{ fontSize: '0.8rem', color: '#374151', lineHeight: '1.3' }}>{qualification}</div>
-    },
-    {
-      key: 'department',
-      header: 'Department',
-      width: '160px',
-      render: (department: string) => <div style={{ fontSize: '0.875rem', color: '#374151' }}>{department}</div>
-    },
-    {
-      key: 'retirement',
-      header: 'Retirement Date',
-      width: '130px',
+      key: 'status', header: 'Status', width: '120px',
       render: (_, staff: any) => {
-        const isNear = new Date(staff.dateOfRetirement).getFullYear() <= new Date().getFullYear() + 2;
-        return (
-          <div style={{ fontSize: '0.875rem', color: isNear ? '#EF4444' : '#6B7280', fontWeight: isNear ? '500' : '400' }}>
-            {staff.dateOfRetirement}
-          </div>
-        );
-      }
-    },
-    {
-      key: 'remarks',
-      header: 'Remarks',
-      width: '200px',
-      render: (remarks: string, staff: any) => {
-        const status = getStatusFromRemarks(remarks);
-        return (
-          <div>
-            <Badge variant={status.variant} size="sm" style={{ marginBottom: '0.25rem' }}>
-              {status.label}
-            </Badge>
-            <div style={{ fontSize: '0.75rem', color: '#6B7280', lineHeight: '1.3' }}>
-              {remarks}
-            </div>
-          </div>
-        );
+        const status = getStatusFromRemarks(staff.remarks);
+        return <Badge variant={status.variant} size="sm">{status.label}</Badge>;
       }
     }
   ];
 
+  // Add actions for ICT Head
+  if (isICTHead) {
+    columns.push({
+      key: 'actions', header: 'Actions', width: '150px',
+      render: (_, staff: any) => (
+        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+          {[
+            { icon: Eye, action: () => handleCRUD('view', null, staff), color: '#3B82F6', title: 'View Details' },
+            { icon: Edit, action: () => { setSelectedStaff(staff); setShowEditStaff(true); }, color: 'var(--akwa-green)', title: 'Edit Staff' },
+            { icon: Trash2, action: () => handleCRUD('delete', null, staff), color: '#EF4444', title: 'Delete Staff' }
+          ].map(({ icon: Icon, action, color, title }, idx) => (
+            <button key={idx} onClick={action} title={title} style={{ padding: '0.25rem', border: 'none', borderRadius: '0.25rem', backgroundColor: color, color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon style={{ width: '0.875rem', height: '0.875rem' }} />
+            </button>
+          ))}
+        </div>
+      )
+    });
+  }
+
+  const stats = [
+    { label: 'Total Staff', value: state.staffData?.length || 0, color: '#374151', icon: '👥' },
+    { label: 'Departments', value: departments.length, color: 'var(--akwa-green)', icon: '🏢' },
+    { label: 'LGAs', value: lgas.length, color: 'var(--akwa-orange)', icon: '🗺️' },
+    { label: 'Near Retirement', value: filteredStaff.filter((s: any) => s.dateOfRetirement && new Date(s.dateOfRetirement).getFullYear() <= new Date().getFullYear() + 2).length, color: '#EF4444', icon: '📅' }
+  ];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Header - Director View Only */}
+      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: '0 0 0.5rem 0' }}>
-            STAFF NOMINAL ROLL OF STATE BUDGET OFFICE
-          </h3>
-          <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: 0 }}>
-            Governor's Office Annex Uyo - July 2025 • Akwa Ibom State - "The Land of Promise"
-          </p>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: '0 0 0.5rem 0' }}>STAFF NOMINAL ROLL OF STATE BUDGET OFFICE</h3>
+          <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: 0 }}>Governor's Office Annex Uyo - July 2025 • Akwa Ibom State - "The Land of Promise"</p>
         </div>
-        
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {/* Total Staff Badge */}
-          <div style={{
-            background: 'linear-gradient(135deg, var(--akwa-orange) 0%, var(--akwa-green) 100%)',
-            color: 'white',
-            padding: '0.75rem 1.25rem',
-            borderRadius: '0.5rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
+          {isICTHead && (
+            <Button variant="gradient" size="md" icon={<UserPlus />} onClick={() => setShowCreateStaff(true)} disabled={isLoading}>
+              {isLoading ? 'Processing...' : 'Create New Staff'}
+            </Button>
+          )}
+          <div style={{ background: 'linear-gradient(135deg, var(--akwa-orange) 0%, var(--akwa-green) 100%)', color: 'white', padding: '0.75rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Database style={{ width: '1rem', height: '1rem' }} />
             {state.staffData?.length || 0} Total Staff
           </div>
         </div>
       </div>
 
-      {/* Quick Stats */}
+      {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
-        {[
-          { label: 'Total Staff', value: state.staffData?.length || 0, color: '#374151', icon: '👥' },
-          { label: 'Departments', value: departments.length, color: 'var(--akwa-green)', icon: '🏢' },
-          { label: 'LGAs', value: lgas.length, color: 'var(--akwa-orange)', icon: '🗺️' },
-          { label: 'Near Retirement', value: filteredStaff.filter((s: any) => 
-            new Date(s.dateOfRetirement).getFullYear() <= new Date().getFullYear() + 2).length, 
-            color: '#EF4444', icon: '📅' }
-        ].map(stat => (
-          <div key={stat.label} style={{ 
-            backgroundColor: 'white', 
-            padding: '1rem', 
-            borderRadius: '0.5rem', 
-            border: '1px solid #E5E7EB',
-            textAlign: 'center'
-          }}>
+        {stats.map(stat => (
+          <div key={stat.label} style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #E5E7EB', textAlign: 'center' }}>
             <div style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{stat.icon}</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: stat.color, marginBottom: '0.25rem' }}>
-              {stat.value}
-            </div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: stat.color, marginBottom: '0.25rem' }}>{stat.value}</div>
             <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>{stat.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Search & Filters */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        padding: '1rem', 
-        borderRadius: '0.5rem', 
-        border: '1px solid #E5E7EB',
-        display: 'flex', 
-        gap: '1rem', 
-        alignItems: 'center',
-        flexWrap: 'wrap'
-      }}>
-        {/* Search */}
+      {/* Filters */}
+      <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #E5E7EB', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: '250px', position: 'relative' }}>
-          <Search style={{ 
-            position: 'absolute', 
-            left: '0.75rem', 
-            top: '50%', 
-            transform: 'translateY(-50%)', 
-            width: '1rem', 
-            height: '1rem', 
-            color: '#9CA3AF' 
-          }} />
-          <input
-            type="text"
-            placeholder="Search by name, rank, department, or LGA..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.5rem 0.75rem 0.5rem 2.5rem',
-              border: '1px solid #D1D5DB',
-              borderRadius: '0.375rem',
-              fontSize: '0.875rem'
-            }}
-          />
+          <Search style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: '1rem', height: '1rem', color: '#9CA3AF' }} />
+          <input type="text" placeholder="Search by name, rank, department, or LGA..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.5rem', border: '1px solid #D1D5DB', borderRadius: '0.375rem', fontSize: '0.875rem' }} />
         </div>
-
-        {/* Department Filter */}
-        <select
-          value={departmentFilter}
-          onChange={(e) => setDepartmentFilter(e.target.value)}
-          style={{
-            padding: '0.5rem 0.75rem',
-            border: '1px solid #D1D5DB',
-            borderRadius: '0.375rem',
-            fontSize: '0.875rem',
-            backgroundColor: 'white',
-            minWidth: '150px'
-          }}
-        >
+        <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)} style={{ padding: '0.5rem 0.75rem', border: '1px solid #D1D5DB', borderRadius: '0.375rem', fontSize: '0.875rem', backgroundColor: 'white', minWidth: '150px' }}>
           <option value="all">All Departments</option>
           {departments.map(dept => <option key={dept} value={dept}>{dept}</option>)}
         </select>
-
-        {/* LGA Filter */}
-        <select
-          value={lgaFilter}
-          onChange={(e) => setLgaFilter(e.target.value)}
-          style={{
-            padding: '0.5rem 0.75rem',
-            border: '1px solid #D1D5DB',
-            borderRadius: '0.375rem',
-            fontSize: '0.875rem',
-            backgroundColor: 'white',
-            minWidth: '120px'
-          }}
-        >
+        <select value={lgaFilter} onChange={(e) => setLgaFilter(e.target.value)} style={{ padding: '0.5rem 0.75rem', border: '1px solid #D1D5DB', borderRadius: '0.375rem', fontSize: '0.875rem', backgroundColor: 'white', minWidth: '120px' }}>
           <option value="all">All LGAs</option>
           {lgas.map(lga => <option key={lga} value={lga}>{lga}</option>)}
         </select>
-
-        {/* Export Button */}
-        <Button
-          variant="success"
-          size="sm"
-          icon={<Download />}
-          onClick={() => {
-            console.log(`Exporting ${filteredStaff.length} staff records...`);
-            alert(`Exporting ${filteredStaff.length} records to Excel...`);
-          }}
-        >
-          Export
-        </Button>
-
-        {/* Clear Filters */}
+        <Button variant="success" size="sm" icon={<Download />} onClick={() => alert(`Exporting ${filteredStaff.length} records to Excel...`)}>Export</Button>
         {(search || departmentFilter !== 'all' || lgaFilter !== 'all') && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => {
-              setSearch('');
-              setDepartmentFilter('all');
-              setLgaFilter('all');
-            }}
-          >
-            Clear
-          </Button>
+          <Button variant="ghost" size="sm" onClick={() => { setSearch(''); setDepartmentFilter('all'); setLgaFilter('all'); }}>Clear</Button>
         )}
       </div>
 
-      {/* Results Summary */}
+      {/* Results */}
       <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>
-        Showing {filteredStaff.length} of {state.staffData?.length || 0} government employees
-        {search && ` matching "${search}"`}
+        Showing {filteredStaff.length} of {state.staffData?.length || 0} government employees{search && ` matching "${search}"`}
+        {isICTHead && <span style={{ marginLeft: '1rem', color: 'var(--akwa-green)', fontWeight: '500' }}>• Full database access enabled</span>}
       </div>
 
-      {/* Staff Table */}
-      <Table
-        columns={columns}
-        data={filteredStaff}
-        keyField="sn"
-        loading={state.isLoading}
-        emptyMessage={
-          search || departmentFilter !== 'all' || lgaFilter !== 'all'
-            ? "No government employees match your filters."
-            : "Loading official government staff database..."
-        }
-        size="md"
-        onRowClick={(staff) => console.log('View staff record:', staff)}
-      />
+      {/* Table */}
+      <Table columns={columns} data={filteredStaff} keyField="id" loading={state.isLoading || isLoading} emptyMessage={search || departmentFilter !== 'all' || lgaFilter !== 'all' ? "No government employees match your filters." : "Loading official government staff database..."} size="md" onRowClick={(staff) => console.log('View staff record:', staff)} />
 
       {/* Footer */}
-      <div style={{
-        backgroundColor: '#F9FAFB',
-        padding: '1.5rem',
-        borderRadius: '0.5rem',
-        border: '1px solid #E5E7EB',
-        textAlign: 'center'
-      }}>
-        <h4 style={{ fontSize: '1rem', fontWeight: '500', color: '#374151', margin: '0 0 0.5rem 0' }}>
-          Official Government Database
-        </h4>
-        <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.5rem 0' }}>
-          Budget Office • Governor's Office Annex Uyo • Akwa Ibom State
-        </p>
-        <p style={{ fontSize: '0.75rem', color: '#9CA3AF', margin: 0 }}>
-          "The Land of Promise" - Official Records • Last updated: {new Date().toLocaleDateString()}
-        </p>
+      <div style={{ backgroundColor: '#F9FAFB', padding: '1.5rem', borderRadius: '0.5rem', border: '1px solid #E5E7EB', textAlign: 'center' }}>
+        <h4 style={{ fontSize: '1rem', fontWeight: '500', color: '#374151', margin: '0 0 0.5rem 0' }}>Official Government Database {isICTHead && '• ICT Administrative Access'}</h4>
+        <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.5rem 0' }}>Budget Office • Governor's Office Annex Uyo • Akwa Ibom State</p>
+        <p style={{ fontSize: '0.75rem', color: '#9CA3AF', margin: 0 }}>"The Land of Promise" - Official Records • Last updated: {new Date().toLocaleDateString()}</p>
       </div>
+
+      {/* Modals */}
+      <Modal isOpen={showCreateStaff} onClose={() => setShowCreateStaff(false)} title="Create New Government Staff Record" size="xl">
+        <CreateStaffForm onSubmit={(data) => handleCRUD('create', data)} onCancel={() => setShowCreateStaff(false)} />
+      </Modal>
+      {selectedStaff && (
+        <Modal isOpen={showEditStaff} onClose={() => { setShowEditStaff(false); setSelectedStaff(null); }} title="Edit Government Staff Record" size="xl">
+          <CreateStaffForm onSubmit={(data) => handleCRUD('update', data)} onCancel={() => { setShowEditStaff(false); setSelectedStaff(null); }} />
+        </Modal>
+      )}
     </div>
   );
 };
 
 export default GovernmentDatabaseTab;
-
-
-
