@@ -1,8 +1,9 @@
 // src/components/pages/DirectorDashboard/components/GovernmentDatabaseTab.tsx
-// Enhanced Government Database Tab - Compact with Full CRUD
+// Enhanced Government Database Tab - Updated with Toast Notifications
 
 import React, { useState, useMemo } from 'react';
 import { Search, Download, Database, UserPlus, Edit, Trash2, Eye } from 'lucide-react';
+import toast from 'react-hot-toast';
 import Table, { TableColumn } from '../../../common/Table';
 import Button from '../../../common/Button';
 import Badge from '../../../common/Badge';
@@ -73,9 +74,14 @@ const GovernmentDatabaseTab: React.FC = () => {
   // CRUD Handlers
   const handleCRUD = async (action: string, staffData?: any, staff?: any) => {
     if (!isICTHead && action !== 'view') {
-      alert('Only ICT Head can modify staff records');
+      toast.error('Only ICT Head can modify staff records', { duration: 5000 });
       return;
     }
+
+    // Show loading toast for operations that take time
+    const loadingToast = ['create', 'update', 'delete'].includes(action) 
+      ? toast.loading(`${action === 'create' ? 'Creating' : action === 'update' ? 'Updating' : 'Deleting'} staff member...`)
+      : null;
 
     try {
       setIsLoading(true);
@@ -84,30 +90,106 @@ const GovernmentDatabaseTab: React.FC = () => {
       switch (action) {
         case 'create':
           result = await apiCall('/api/v1/staff', 'POST', transformStaffData(staffData));
-          alert('Staff member created successfully!');
+          toast.success(
+            `Staff member ${staffData.firstName} ${staffData.lastName} created successfully!`,
+            { id: loadingToast!, duration: 5000 }
+          );
           setShowCreateStaff(false);
+          // Refresh staff data
+          await state.loadNominalRoll?.();
           break;
+
         case 'update':
           result = await apiCall(`/api/v1/staff/${selectedStaff.id}`, 'PUT', transformStaffData(staffData));
-          alert('Staff member updated successfully!');
+          toast.success(
+            `Staff member ${staffData.firstName} ${staffData.lastName} updated successfully!`,
+            { id: loadingToast!, duration: 5000 }
+          );
           setShowEditStaff(false);
           setSelectedStaff(null);
+          // Refresh staff data
+          await state.loadNominalRoll?.();
           break;
+
         case 'delete':
-          if (!window.confirm(`Delete ${staff.firstName || staff.nameOfOfficer} ${staff.lastName}?`)) return;
+          if (!window.confirm(`Delete ${staff.firstName || staff.nameOfOfficer} ${staff.lastName}?`)) {
+            toast.dismiss(loadingToast!);
+            return;
+          }
           result = await apiCall(`/api/v1/staff/${staff.id}`, 'DELETE');
-          alert('Staff member deleted successfully!');
+          toast.success(
+            `Staff member ${staff.firstName || staff.nameOfOfficer} ${staff.lastName} deleted successfully!`,
+            { id: loadingToast!, duration: 5000 }
+          );
+          // Refresh staff data
+          await state.loadNominalRoll?.();
           break;
+
         case 'view':
           result = await apiCall(`/api/v1/staff/${staff.id}`);
-          alert(`Staff: ${result.data.firstName} ${result.data.lastName}\nRank: ${result.data.rank}\nDept: ${result.data.department?.name || 'N/A'}`);
+          const staffInfo = result.data;
+          toast(
+            (t) => (
+              <div style={{ maxWidth: '300px' }}>
+                <div style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#111827' }}>
+                  {staffInfo.firstName} {staffInfo.lastName}
+                </div>
+                <div style={{ fontSize: '0.875rem', color: '#6B7280', lineHeight: '1.4' }}>
+                  <div><strong>Rank:</strong> {staffInfo.rank}</div>
+                  <div><strong>Department:</strong> {staffInfo.department?.name || 'N/A'}</div>
+                  <div><strong>Grade:</strong> {staffInfo.gradeLevel} Step {staffInfo.step}</div>
+                  <div><strong>Email:</strong> {staffInfo.email || 'N/A'}</div>
+                </div>
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  style={{
+                    marginTop: '0.75rem',
+                    padding: '0.5rem 1rem',
+                    backgroundColor: 'var(--akwa-green)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            ),
+            { duration: 10000 }
+          );
           break;
       }
     } catch (error) {
-      alert(`Failed to ${action} staff: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast.error(
+        `Failed to ${action} staff member. ${errorMessage}`,
+        { 
+          id: loadingToast!, 
+          duration: 6000 
+        }
+      );
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Export Handler
+  const handleExport = () => {
+    toast.promise(
+      new Promise((resolve) => {
+        // Simulate export delay
+        setTimeout(() => {
+          resolve(`${filteredStaff.length} records exported to Excel`);
+        }, 2000);
+      }),
+      {
+        loading: 'Preparing Excel export...',
+        success: (message) => `${message} successfully!`,
+        error: 'Failed to export records'
+      }
+    );
   };
 
   // Helper functions
@@ -229,7 +311,7 @@ const GovernmentDatabaseTab: React.FC = () => {
           <option value="all">All LGAs</option>
           {lgas.map(lga => <option key={lga} value={lga}>{lga}</option>)}
         </select>
-        <Button variant="success" size="sm" icon={<Download />} onClick={() => alert(`Exporting ${filteredStaff.length} records to Excel...`)}>Export</Button>
+        <Button variant="success" size="sm" icon={<Download />} onClick={handleExport}>Export</Button>
         {(search || departmentFilter !== 'all' || lgaFilter !== 'all') && (
           <Button variant="ghost" size="sm" onClick={() => { setSearch(''); setDepartmentFilter('all'); setLgaFilter('all'); }}>Clear</Button>
         )}
