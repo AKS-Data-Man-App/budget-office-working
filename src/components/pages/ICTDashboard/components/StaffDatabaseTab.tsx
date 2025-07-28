@@ -50,7 +50,7 @@ const StaffDatabaseTab: React.FC<StaffDatabaseTabProps> = ({ staffData }) => {
   };
 
   const handleDeleteStaff = (staff: any) => {
-    if (confirm(`Are you sure you want to delete ${staff.firstName} ${staff.lastName}?`)) {
+    if (window.confirm(`Are you sure you want to delete ${staff.firstName} ${staff.lastName}?`)) {
       console.log('Delete staff:', staff);
       // TODO: Call delete API
     }
