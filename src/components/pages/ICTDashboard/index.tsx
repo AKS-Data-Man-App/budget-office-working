@@ -9,7 +9,7 @@ import Modal from '../../common/Modal';
 
 // Import components
 import StatsCards from './components/StatsCards';
-import StaffDatabaseTab from './components/StaffDatabaseTab';
+import GovernmentDatabaseTab from '../DirectorDashboard/components/GovernmentDatabaseTab';
 import UserAccountsTab from './components/UserAccountsTab';
 import SystemSettingsTab from './components/SystemSettingsTab';
 import CreateStaffForm from '../DirectorDashboard/components/CreateStaffForm';
@@ -27,7 +27,7 @@ const ICTDashboard: React.FC = () => {
 
   // Tab configuration
   const tabs = [
-    { key: 'staff' as TabKey, label: 'Staff Database', icon: Database, color: 'var(--akwa-green)' },
+    { key: 'staff' as TabKey, label: 'Government Database', icon: Database, color: 'var(--akwa-green)' },
     { key: 'users' as TabKey, label: 'User Accounts', icon: Users, color: 'var(--akwa-orange)' },
     { key: 'settings' as TabKey, label: 'System Settings', icon: Settings, color: '#8B5CF6' }
   ];
@@ -49,13 +49,13 @@ const ICTDashboard: React.FC = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'staff':
-        return <StaffDatabaseTab staffData={state.staffData || []} />;
+        return <GovernmentDatabaseTab />;
       case 'users':
         return <UserAccountsTab users={state.allUsers || []} />;
       case 'settings':
         return <SystemSettingsTab />;
       default:
-        return <StaffDatabaseTab staffData={state.staffData || []} />;
+        return <GovernmentDatabaseTab />;
     }
   };
 
