@@ -1,18 +1,18 @@
 // src/App.tsx
 // Role-Based Router for Akwa Ibom State Budget Office
 // 3-Tier Authentication System: Director → ICT Head → Staff
+// Updated with React Hot Toast Notifications
 
 import React from 'react';
+import { Toaster } from 'react-hot-toast';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { UserRole } from './types/auth.types';
 
 // Import page components
 import LoginPage from './components/pages/LoginPage';
 import HomePage from './components/pages/HomePage';
-// import BudgetOfficePage from './components/pages/BudgetOfficePage';
-// import DatabasePage from './components/pages/DatabasePage';
 import DirectorDashboard from './components/pages/DirectorDashboard';
-import ICTDashboard from './components/pages/ICTDashboard'; // Now imports from ICTDashboard/index.tsx
+import ICTDashboard from './components/pages/ICTDashboard';
 import StaffDashboard from './components/pages/StaffDashboard';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
@@ -120,6 +120,46 @@ const AppContent: React.FC = () => {
       
       {/* Main Content */}
       {renderCurrentPage()}
+      
+      {/* Toast Notifications - Akwa Ibom Colors */}
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            fontSize: '14px',
+            fontWeight: '500'
+          },
+          success: {
+            style: {
+              background: 'var(--akwa-green)',
+              color: 'white'
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: 'var(--akwa-green)'
+            }
+          },
+          error: {
+            style: {
+              background: '#EF4444',
+              color: 'white'
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: '#EF4444'
+            }
+          },
+          loading: {
+            style: {
+              background: 'var(--akwa-orange)',
+              color: 'white'
+            }
+          }
+        }}
+      />
     </div>
   );
 };
