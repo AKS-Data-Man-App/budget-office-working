@@ -1,8 +1,9 @@
 // src/components/pages/DirectorDashboard/components/CreateStaffForm.tsx
-// Staff Creation Form - Backend API Integrated
+// Staff Creation Form - Backend API Integrated with Toast Notifications
 
 import React, { useState, useEffect } from 'react';
 import { User, Save, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 import Button from '../../../common/Button';
 
 interface CreateStaffFormProps {
@@ -14,7 +15,6 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
   const [loading, setLoading] = useState(false);
   const [departments, setDepartments] = useState<any[]>([]);
   const [formData, setFormData] = useState({
-    // Backend API fields
     firstName: '',
     lastName: '',
     sex: '',
@@ -36,19 +36,25 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
   // Load departments from backend
   useEffect(() => {
     const loadDepartments = async () => {
+      const loadingToast = toast.loading('Loading departments...');
+      
       try {
         const token = localStorage.getItem('token');
         const response = await fetch('https://budget-office-backend.onrender.com/api/v1/departments', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const result = await response.json();
+        
         if (result.success) {
           setDepartments(result.data);
+          toast.success('Departments loaded successfully', { id: loadingToast });
         } else {
           throw new Error('Failed to load departments');
         }
       } catch (error) {
         console.error('Error loading departments:', error);
+        toast.error('Failed to load departments. Using fallback data.', { id: loadingToast });
+        
         // Fallback departments with proper IDs
         setDepartments([
           { id: 'dept_budget_001', name: 'Budget Department' },
@@ -78,11 +84,14 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
     e.preventDefault();
     setLoading(true);
     
+    // Show loading toast
+    const loadingToast = toast.loading('Creating staff member...');
+    
     try {
       // Generate employee ID
       const employeeId = `AKS${Date.now().toString().slice(-6)}`;
       
-      // Transform data to match backend API format (from our successful test)
+      // Transform data to match backend API format
       const apiData = {
         employeeId,
         firstName: formData.firstName,
@@ -106,9 +115,47 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
       // Call the parent's onSubmit with transformed data
       await onSubmit(apiData);
       
+      // Success toast
+      toast.success(
+        `Staff member ${formData.firstName} ${formData.lastName} created successfully!`,
+        { 
+          id: loadingToast,
+          duration: 5000 
+        }
+      );
+
+      // Reset form after successful creation
+      setFormData({
+        firstName: '',
+        lastName: '',
+        sex: '',
+        dateOfBirth: '',
+        dateOfFirstAppointment: '',
+        dateOfConfirmation: '',
+        dateOfLastPromotion: '',
+        rank: '',
+        gradeLevel: '',
+        step: 1,
+        educationalQualification: '',
+        lga: '',
+        departmentId: '',
+        remarks: '',
+        email: '',
+        phoneNumber: ''
+      });
+      
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Error creating staff member. Please try again.');
+      
+      // Error toast with specific message
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create staff member';
+      toast.error(
+        `Failed to create staff member. ${errorMessage}`,
+        { 
+          id: loadingToast,
+          duration: 6000 
+        }
+      );
     } finally {
       setLoading(false);
     }
@@ -182,7 +229,7 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
           <h4 style={{ margin: '0 0 1rem 0', color: '#374151', fontSize: '1rem', fontWeight: '500' }}>
             📞 Contact Information
           </h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minWidth(250px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Email Address <span style={{ color: '#EF4444' }}>*</span></label>
               <input 
@@ -213,7 +260,7 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
           <h4 style={{ margin: '0 0 1rem 0', color: '#374151', fontSize: '1rem', fontWeight: '500' }}>
             📅 Service Information
           </h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minWidth(250px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>First Appointment <span style={{ color: '#EF4444' }}>*</span></label>
               <input type="date" value={formData.dateOfFirstAppointment} onChange={(e) => handleChange('dateOfFirstAppointment', e.target.value)} required style={inputStyle} />
@@ -234,7 +281,7 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
           <h4 style={{ margin: '0 0 1rem 0', color: '#374151', fontSize: '1rem', fontWeight: '500' }}>
             🏢 Position & Department
           </h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minWidth(250px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Rank/Position <span style={{ color: '#EF4444' }}>*</span></label>
               <select value={formData.rank} onChange={(e) => handleChange('rank', e.target.value)} required style={{...inputStyle, backgroundColor: 'white'}}>
