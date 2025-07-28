@@ -1,155 +1,232 @@
-// src/components/pages/ICTDashboard/components/StatsCards.tsx
-// Beautiful Stats Cards with Akwa Ibom Colors
+// src/components/pages/ICTDashboard/index.tsx
+// ICT Head Dashboard - Clean Main Component
 
-import React from 'react';
-import { FileText, Users, Database, UserPlus } from 'lucide-react';
+import React, { useState } from 'react';
+import { useAppContext } from '../../../context/AppContext';
+import { Database, Users, Settings } from 'lucide-react';
+import Button from '../../common/Button';
+import Modal from '../../common/Modal';
 
-interface StatsCardsProps {
-  staffCount: number;
-  userCount: number;
-  onCreateStaff: () => void;
-}
+// Import components
+import StatsCards from './components/StatsCards';
+import StaffDatabaseTab from './components/StaffDatabaseTab';
+import UserAccountsTab from './components/UserAccountsTab';
+import SystemSettingsTab from './components/SystemSettingsTab';
+import CreateStaffForm from '../DirectorDashboard/components/CreateStaffForm';
 
-const StatsCards: React.FC<StatsCardsProps> = ({ 
-  staffCount, 
-  userCount, 
-  onCreateStaff 
-}) => {
-  // Calculate derived stats
-  const activeStaff = staffCount; // Assuming all staff are active for now
-  const departments = Math.max(2, Math.ceil(staffCount / 5)); // Estimate departments
+type TabKey = 'staff' | 'users' | 'settings';
 
-  const stats = [
-    {
-      title: 'Staff Records',
-      value: staffCount,
-      icon: FileText,
-      gradient: 'linear-gradient(135deg, var(--akwa-green) 0%, #22C55E 100%)',
-      subtitle: 'Government database'
-    },
-    {
-      title: 'System Users',
-      value: userCount,
-      icon: Users,
-      gradient: 'linear-gradient(135deg, var(--akwa-orange) 0%, #F97316 100%)',
-      subtitle: 'Active accounts'
-    },
-    {
-      title: 'Active Staff',
-      value: activeStaff,
-      icon: Database,
-      gradient: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
-      subtitle: 'Currently employed'
-    }
+const ICTDashboard: React.FC = () => {
+  const { state, dispatch } = useAppContext();
+  const [activeTab, setActiveTab] = useState<TabKey>('staff');
+  const [showCreateStaff, setShowCreateStaff] = useState(false);
+
+  // Ensure we have default values for stats
+  const staffCount = state.staffData?.length || 0;
+  const userCount = state.allUsers?.length || 0;
+
+  // Tab configuration
+  const tabs = [
+    { key: 'staff' as TabKey, label: 'Staff Database', icon: Database, color: 'var(--akwa-green)' },
+    { key: 'users' as TabKey, label: 'User Accounts', icon: Users, color: 'var(--akwa-orange)' },
+    { key: 'settings' as TabKey, label: 'System Settings', icon: Settings, color: '#8B5CF6' }
   ];
 
-  return (
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-      gap: '1.5rem'
-    }}>
-      {/* Stats Cards */}
-      {stats.map((stat, index) => {
-        const Icon = stat.icon;
-        
-        return (
-          <div
-            key={index}
-            style={{
-              background: stat.gradient,
-              color: 'white',
-              padding: '1.5rem',
-              borderRadius: '1rem',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-              position: 'relative',
-              overflow: 'hidden',
-              transition: 'transform 0.2s ease'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between', 
-                marginBottom: '1rem' 
-              }}>
-                <Icon style={{ width: '2rem', height: '2rem' }} />
-                <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-                  {stat.value}
-                </div>
-              </div>
-              <div style={{ fontSize: '1rem', fontWeight: '500' }}>
-                {stat.title}
-              </div>
-              <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
-                {stat.subtitle}
-              </div>
-            </div>
-            
-            {/* Decorative Circle */}
-            <div style={{
-              position: 'absolute',
-              top: '-20%',
-              right: '-20%',
-              width: '120px',
-              height: '120px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '50%'
-            }} />
-          </div>
-        );
-      })}
+  // Handle staff creation
+  const handleCreateStaff = async (staffData: any) => {
+    try {
+      console.log('Creating new staff:', staffData);
+      // TODO: Call backend API
+      alert('Staff member created successfully!');
+      setShowCreateStaff(false);
+    } catch (error) {
+      console.error('Error creating staff:', error);
+      alert('Failed to create staff member. Please try again.');
+    }
+  };
 
-      {/* Create Staff Action Card */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-          color: 'white',
-          padding: '1.5rem',
-          borderRadius: '1rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-          position: 'relative',
-          overflow: 'hidden',
-          cursor: 'pointer',
-          transition: 'transform 0.2s ease',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center'
-        }}
-        onClick={onCreateStaff}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-      >
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ marginBottom: '1rem' }}>
-            <UserPlus style={{ width: '3rem', height: '3rem' }} />
-          </div>
-          <div style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '0.5rem' }}>
-            Create New Staff
-          </div>
-          <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
-            Add to database
-          </div>
-        </div>
-        
-        {/* Decorative Circle */}
+  // Render tab content
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'staff':
+        return <StaffDatabaseTab staffData={state.staffData || []} />;
+      case 'users':
+        return <UserAccountsTab users={state.allUsers || []} />;
+      case 'settings':
+        return <SystemSettingsTab />;
+      default:
+        return <StaffDatabaseTab staffData={state.staffData || []} />;
+    }
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: '#F9FAFB' }}>
+      {/* Header */}
+      <header style={{
+        background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+        color: 'white',
+        padding: '2rem',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Decorative Element */}
         <div style={{
           position: 'absolute',
-          top: '-20%',
-          right: '-20%',
-          width: '120px',
-          height: '120px',
-          background: 'rgba(255,255,255,0.1)',
-          borderRadius: '50%'
+          top: '-50%',
+          right: '-10%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+          borderRadius: '50%',
+          zIndex: 0
         }} />
+        
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <h1 style={{
+                fontSize: '2.5rem',
+                fontWeight: 'bold',
+                margin: '0 0 0.5rem 0',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}>
+                ICT Dashboard
+              </h1>
+              <p style={{ fontSize: '1.125rem', margin: 0, opacity: 0.9 }}>
+                Database Management & Staff Administration
+              </p>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {state.user && (
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '0.25rem' }}>
+                    {state.user.firstName} {state.user.lastName}
+                  </div>
+                  <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
+                    ICT Administrator
+                  </div>
+                </div>
+              )}
+              
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() => {
+                  dispatch({ type: 'LOGOUT' });
+                  dispatch({ type: 'SET_PAGE', payload: 'login' });
+                }}
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                🚪 Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div style={{ padding: '2rem', maxWidth: '1280px', margin: '0 auto' }}>
+        {/* Stats Cards */}
+        <div style={{ marginBottom: '2rem' }}>
+          <StatsCards 
+            staffCount={staffCount}
+            userCount={userCount}
+            onCreateStaff={() => setShowCreateStaff(true)}
+          />
+        </div>
+
+        {/* Tab Navigation */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '1rem',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          overflow: 'hidden',
+          border: '1px solid rgba(255, 255, 255, 0.5)'
+        }}>
+          {/* Tab Headers */}
+          <div style={{
+            display: 'flex',
+            background: 'linear-gradient(90deg, #F8FAFC 0%, #F1F5F9 100%)',
+            borderBottom: '1px solid #E2E8F0'
+          }}>
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.key;
+              
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  style={{
+                    flex: 1,
+                    padding: '1.25rem 1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.75rem',
+                    backgroundColor: isActive ? 'white' : 'transparent',
+                    borderBottom: isActive ? `4px solid ${tab.color}` : '4px solid transparent',
+                    color: isActive ? tab.color : '#64748B',
+                    fontWeight: isActive ? '600' : '500',
+                    fontSize: '0.925rem',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <Icon style={{ width: '1.25rem', height: '1.25rem' }} />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Tab Content */}
+          <div style={{ padding: '2rem', minHeight: '500px', backgroundColor: 'white' }}>
+            {renderTabContent()}
+          </div>
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer style={{
+        background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)',
+        color: 'white',
+        padding: '2rem',
+        textAlign: 'center',
+        marginTop: '3rem'
+      }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <p style={{ fontSize: '1rem', margin: '0 0 0.5rem 0', opacity: 0.9 }}>
+            © 2025 Akwa Ibom State Budget Office - ICT Administration
+          </p>
+          <p style={{ fontSize: '0.875rem', margin: 0, opacity: 0.7, fontStyle: 'italic' }}>
+            "The Land of Promise" - Secure Database Management
+          </p>
+        </div>
+      </footer>
+
+      {/* Create Staff Modal */}
+      <Modal
+        isOpen={showCreateStaff}
+        onClose={() => setShowCreateStaff(false)}
+        title="Create New Government Staff Record"
+        size="xl"
+      >
+        <CreateStaffForm
+          onSubmit={handleCreateStaff}
+          onCancel={() => setShowCreateStaff(false)}
+        />
+      </Modal>
     </div>
   );
 };
 
-export default StatsCards;
+export default ICTDashboard;
