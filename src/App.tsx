@@ -12,7 +12,7 @@ import HomePage from './components/pages/HomePage';
 // import BudgetOfficePage from './components/pages/BudgetOfficePage';
 // import DatabasePage from './components/pages/DatabasePage';
 import DirectorDashboard from './components/pages/DirectorDashboard';
-import ICTDashboard from './components/pages/ICTDashboard';
+import ICTDashboard from './components/pages/ICTDashboard'; // Now imports from ICTDashboard/index.tsx
 import StaffDashboard from './components/pages/StaffDashboard';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
