@@ -1,7 +1,7 @@
 // src/components/pages/DirectorDashboard/components/CreateStaffForm.tsx
-// Staff Creation Form - Compact and Essential
+// Staff Creation Form - Backend API Integrated
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Save, X } from 'lucide-react';
 import Button from '../../../common/Button';
 
@@ -12,15 +12,53 @@ interface CreateStaffFormProps {
 
 const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel }) => {
   const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState<any[]>([]);
   const [formData, setFormData] = useState({
-    nameOfOfficer: '', sex: '', dateOfBirth: '', dateOfFirstAppointment: '',
-    dateOfConfirmation: '', dateOfLastPromotion: '', rank: '', gradeLevel: '',
-    step: 1, educationalQualification: '', lga: '', department: '', remarks: ''
+    // Backend API fields
+    firstName: '',
+    lastName: '',
+    sex: '',
+    dateOfBirth: '',
+    dateOfFirstAppointment: '',
+    dateOfConfirmation: '',
+    dateOfLastPromotion: '',
+    rank: '',
+    gradeLevel: '',
+    step: 1,
+    educationalQualification: '',
+    lga: '',
+    departmentId: '',
+    remarks: '',
+    email: '',
+    phoneNumber: ''
   });
 
-  // Data arrays
+  // Load departments from backend
+  useEffect(() => {
+    const loadDepartments = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('https://budget-office-backend.onrender.com/api/v1/departments', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const result = await response.json();
+        if (result.success) {
+          setDepartments(result.data);
+        }
+      } catch (error) {
+        console.error('Error loading departments:', error);
+        // Fallback departments
+        setDepartments([
+          { id: 'dept_budget_001', name: 'Budget Department' },
+          { id: 'dept_finance_001', name: 'Finance Department' }
+        ]);
+      }
+    };
+    loadDepartments();
+  }, []);
+
+  // Static data arrays
   const lgas = ['Abak', 'Eastern Obolo', 'Eket', 'Esit Eket', 'Essien Udim', 'Etim Ekpo', 'Etinan', 'Ibeno', 'Ibesikpo Asutan', 'Ibiono-Ibom', 'Ika', 'Ikono', 'Ikot Abasi', 'Ikot Ekpene', 'Ini', 'Itu', 'Mbo', 'Mkpat-Enin', 'Nsit-Atai', 'Nsit-Ibom', 'Nsit-Ubium', 'Obot Akara', 'Okobo', 'Onna', 'Oron', 'Oruk Anam', 'Udung-Uko', 'Ukanafun', 'Uruan', 'Urue-Offong/Oruko', 'Uyo'];
-  const departments = ['Administration Department', 'Audit Department', 'Budget Department', 'Finance Department', 'Human Resources', 'ICT Department', 'Legal Department', 'Planning Department', 'Procurement Department', 'Public Relations'];
   const grades = ['GL-01', 'GL-02', 'GL-03', 'GL-04', 'GL-05', 'GL-06', 'GL-07', 'GL-08', 'GL-09', 'GL-10', 'GL-11', 'GL-12', 'GL-13', 'GL-14', 'GL-15', 'GL-16', 'GL-17'];
   const ranks = ['Administrative Officer', 'Senior Administrative Officer', 'Principal Administrative Officer', 'Assistant Director', 'Deputy Director', 'Director', 'Budget Analyst', 'Senior Budget Analyst', 'Principal Budget Analyst', 'Finance Officer', 'Senior Finance Officer', 'Finance Manager', 'Accountant', 'Senior Accountant', 'Chief Accountant', 'Planning Officer', 'Senior Planning Officer', 'ICT Officer', 'Senior ICT Officer', 'Audit Officer', 'Senior Audit Officer'];
 
@@ -29,24 +67,47 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    
     try {
-      const birthDate = new Date(formData.dateOfBirth);
-      const retirementDate = new Date(birthDate);
-      retirementDate.setFullYear(birthDate.getFullYear() + 60);
+      // Generate employee ID
+      const employeeId = `AKS${Date.now().toString().slice(-6)}`;
       
-      await onSubmit({
-        ...formData,
-        dateOfRetirement: retirementDate.toLocaleDateString('en-US'),
-        step: Number(formData.step)
-      });
+      // Transform data to match backend API format (from our successful test)
+      const apiData = {
+        employeeId,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        sex: formData.sex,
+        dateOfBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : null,
+        dateOfFirstAppointment: formData.dateOfFirstAppointment ? new Date(formData.dateOfFirstAppointment).toISOString() : null,
+        dateOfConfirmation: formData.dateOfConfirmation ? new Date(formData.dateOfConfirmation).toISOString() : null,
+        dateOfLastPromotion: formData.dateOfLastPromotion ? new Date(formData.dateOfLastPromotion).toISOString() : null,
+        rank: formData.rank,
+        gradeLevel: formData.gradeLevel,
+        step: Number(formData.step),
+        educationalQualification: formData.educationalQualification,
+        lga: formData.lga,
+        remarks: formData.remarks,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        departmentId: formData.departmentId
+      };
+
+      // Call the parent's onSubmit with transformed data
+      await onSubmit(apiData);
+      
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error submitting form:', error);
+      alert('Error creating staff member. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const isValid = formData.nameOfOfficer && formData.sex && formData.dateOfBirth && formData.dateOfFirstAppointment && formData.rank && formData.gradeLevel && formData.department && formData.lga;
+  // Form validation
+  const isValid = formData.firstName && formData.lastName && formData.sex && formData.dateOfBirth && 
+                  formData.dateOfFirstAppointment && formData.rank && formData.gradeLevel && 
+                  formData.departmentId && formData.lga && formData.email && formData.phoneNumber;
 
   const inputStyle = { width: '100%', padding: '0.75rem', border: '1px solid #D1D5DB', borderRadius: '0.375rem', fontSize: '0.875rem' };
   const labelStyle = { display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' };
@@ -63,8 +124,26 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
           </h4>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
             <div>
-              <label style={labelStyle}>Full Name <span style={{ color: '#EF4444' }}>*</span></label>
-              <input type="text" value={formData.nameOfOfficer} onChange={(e) => handleChange('nameOfOfficer', e.target.value)} placeholder="e.g., Emem Grace Ekerete" required style={inputStyle} />
+              <label style={labelStyle}>First Name <span style={{ color: '#EF4444' }}>*</span></label>
+              <input 
+                type="text" 
+                value={formData.firstName} 
+                onChange={(e) => handleChange('firstName', e.target.value)} 
+                placeholder="e.g., Emem" 
+                required 
+                style={inputStyle} 
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Last Name <span style={{ color: '#EF4444' }}>*</span></label>
+              <input 
+                type="text" 
+                value={formData.lastName} 
+                onChange={(e) => handleChange('lastName', e.target.value)} 
+                placeholder="e.g., Ekerete" 
+                required 
+                style={inputStyle} 
+              />
             </div>
             <div>
               <label style={labelStyle}>Sex <span style={{ color: '#EF4444' }}>*</span></label>
@@ -88,12 +167,43 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
           </div>
         </div>
 
+        {/* Contact Information */}
+        <div style={sectionStyle}>
+          <h4 style={{ margin: '0 0 1rem 0', color: '#374151', fontSize: '1rem', fontWeight: '500' }}>
+            📞 Contact Information
+          </h4>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minWidth(250px, 1fr))', gap: '1rem' }}>
+            <div>
+              <label style={labelStyle}>Email Address <span style={{ color: '#EF4444' }}>*</span></label>
+              <input 
+                type="email" 
+                value={formData.email} 
+                onChange={(e) => handleChange('email', e.target.value)} 
+                placeholder="e.g., emem.ekerete@aksgov.ng" 
+                required 
+                style={inputStyle} 
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Phone Number <span style={{ color: '#EF4444' }}>*</span></label>
+              <input 
+                type="tel" 
+                value={formData.phoneNumber} 
+                onChange={(e) => handleChange('phoneNumber', e.target.value)} 
+                placeholder="e.g., +2348000000000" 
+                required 
+                style={inputStyle} 
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Service Information */}
         <div style={sectionStyle}>
           <h4 style={{ margin: '0 0 1rem 0', color: '#374151', fontSize: '1rem', fontWeight: '500' }}>
             📅 Service Information
           </h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minWidth(250px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>First Appointment <span style={{ color: '#EF4444' }}>*</span></label>
               <input type="date" value={formData.dateOfFirstAppointment} onChange={(e) => handleChange('dateOfFirstAppointment', e.target.value)} required style={inputStyle} />
@@ -114,7 +224,7 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
           <h4 style={{ margin: '0 0 1rem 0', color: '#374151', fontSize: '1rem', fontWeight: '500' }}>
             🏢 Position & Department
           </h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minWidth(250px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Rank/Position <span style={{ color: '#EF4444' }}>*</span></label>
               <select value={formData.rank} onChange={(e) => handleChange('rank', e.target.value)} required style={{...inputStyle, backgroundColor: 'white'}}>
@@ -124,9 +234,9 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
             </div>
             <div>
               <label style={labelStyle}>Department <span style={{ color: '#EF4444' }}>*</span></label>
-              <select value={formData.department} onChange={(e) => handleChange('department', e.target.value)} required style={{...inputStyle, backgroundColor: 'white'}}>
+              <select value={formData.departmentId} onChange={(e) => handleChange('departmentId', e.target.value)} required style={{...inputStyle, backgroundColor: 'white'}}>
                 <option value="">Select Department</option>
-                {departments.map(dept => <option key={dept} value={dept}>{dept}</option>)}
+                {departments.map(dept => <option key={dept.id} value={dept.id}>{dept.name}</option>)}
               </select>
             </div>
             <div>
@@ -153,11 +263,23 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
           <div style={{ display: 'grid', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Educational Qualification</label>
-              <input type="text" value={formData.educationalQualification} onChange={(e) => handleChange('educationalQualification', e.target.value)} placeholder="e.g., B.Sc Accounting, ACA" style={inputStyle} />
+              <input 
+                type="text" 
+                value={formData.educationalQualification} 
+                onChange={(e) => handleChange('educationalQualification', e.target.value)} 
+                placeholder="e.g., B.Sc Accounting, ACA" 
+                style={inputStyle} 
+              />
             </div>
             <div>
               <label style={labelStyle}>Remarks</label>
-              <textarea value={formData.remarks} onChange={(e) => handleChange('remarks', e.target.value)} placeholder="e.g., Excellent performance record" rows={2} style={{...inputStyle, resize: 'vertical'}} />
+              <textarea 
+                value={formData.remarks} 
+                onChange={(e) => handleChange('remarks', e.target.value)} 
+                placeholder="e.g., Excellent performance record" 
+                rows={2} 
+                style={{...inputStyle, resize: 'vertical'}} 
+              />
             </div>
           </div>
         </div>
@@ -168,13 +290,14 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
             Cancel
           </Button>
           <Button type="submit" variant="gradient" loading={loading} disabled={!isValid || loading} icon={<Save />}>
-            Create Staff
+            {loading ? 'Creating...' : 'Create Staff'}
           </Button>
         </div>
 
+        {/* Validation Message */}
         {!isValid && (
           <div style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '0.375rem', padding: '0.75rem', fontSize: '0.875rem', color: '#B91C1C' }}>
-            Required: Name, Sex, Birth Date, First Appointment, Rank, Grade Level, Department, and LGA
+            Required: First Name, Last Name, Sex, Birth Date, First Appointment, Rank, Grade Level, Department, LGA, Email, and Phone Number
           </div>
         )}
       </form>
