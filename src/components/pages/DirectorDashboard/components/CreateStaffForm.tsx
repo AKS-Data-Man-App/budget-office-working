@@ -44,13 +44,23 @@ const CreateStaffForm: React.FC<CreateStaffFormProps> = ({ onSubmit, onCancel })
         const result = await response.json();
         if (result.success) {
           setDepartments(result.data);
+        } else {
+          throw new Error('Failed to load departments');
         }
       } catch (error) {
         console.error('Error loading departments:', error);
-        // Fallback departments
+        // Fallback departments with proper IDs
         setDepartments([
           { id: 'dept_budget_001', name: 'Budget Department' },
-          { id: 'dept_finance_001', name: 'Finance Department' }
+          { id: 'dept_finance_001', name: 'Finance Department' },
+          { id: 'dept_admin_001', name: 'Administration Department' },
+          { id: 'dept_audit_001', name: 'Audit Department' },
+          { id: 'dept_hr_001', name: 'Human Resources' },
+          { id: 'dept_ict_001', name: 'ICT Department' },
+          { id: 'dept_legal_001', name: 'Legal Department' },
+          { id: 'dept_planning_001', name: 'Planning Department' },
+          { id: 'dept_procurement_001', name: 'Procurement Department' },
+          { id: 'dept_pr_001', name: 'Public Relations' }
         ]);
       }
     };
