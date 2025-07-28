@@ -12,7 +12,7 @@ import { useAppContext } from '../../../../context/AppContext';
 import CreateStaffForm from './CreateStaffForm';
 
 const GovernmentDatabaseTab: React.FC = () => {
-  const { state } = useAppContext();
+  const { state, loadNominalRoll } = useAppContext();
   const [search, setSearch] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [lgaFilter, setLgaFilter] = useState('all');
@@ -96,7 +96,7 @@ const GovernmentDatabaseTab: React.FC = () => {
           );
           setShowCreateStaff(false);
           // Refresh staff data
-          await state.loadNominalRoll?.();
+          await loadNominalRoll();
           break;
 
         case 'update':
@@ -108,7 +108,7 @@ const GovernmentDatabaseTab: React.FC = () => {
           setShowEditStaff(false);
           setSelectedStaff(null);
           // Refresh staff data
-          await state.loadNominalRoll?.();
+          await loadNominalRoll();
           break;
 
         case 'delete':
@@ -122,7 +122,7 @@ const GovernmentDatabaseTab: React.FC = () => {
             { id: loadingToast!, duration: 5000 }
           );
           // Refresh staff data
-          await state.loadNominalRoll?.();
+          await loadNominalRoll();
           break;
 
         case 'view':
