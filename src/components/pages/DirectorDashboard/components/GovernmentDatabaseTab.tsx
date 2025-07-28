@@ -8,7 +8,7 @@ import Button from '../../../common/Button';
 import Badge from '../../../common/Badge';
 import { useAppContext } from '../../../../context/AppContext';
 
-const GovernmentDatabaseTab: React.FC = () => {
+  const GovernmentDatabaseTab: React.FC = () => {
   const { state } = useAppContext();
   const [search, setSearch] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
@@ -359,3 +359,6 @@ const GovernmentDatabaseTab: React.FC = () => {
 };
 
 export default GovernmentDatabaseTab;
+
+
+
