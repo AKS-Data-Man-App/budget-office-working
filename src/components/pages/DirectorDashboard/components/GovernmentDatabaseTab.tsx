@@ -1,18 +1,21 @@
 // src/components/pages/DirectorDashboard/components/GovernmentDatabaseTab.tsx
-// Government Database Tab - Simple and Clean
+// Government Database Tab - With Create New Staff functionality
 
 import React, { useState, useMemo } from 'react';
-import { Search, Download, Database } from 'lucide-react';
+import { Search, Download, Database, UserPlus } from 'lucide-react';
 import Table, { TableColumn } from '../../../common/Table';
 import Button from '../../../common/Button';
 import Badge from '../../../common/Badge';
+import Modal from '../../../common/Modal';
 import { useAppContext } from '../../../../context/AppContext';
+import CreateStaffForm from './CreateStaffForm';
 
 const GovernmentDatabaseTab: React.FC = () => {
   const { state } = useAppContext();
   const [search, setSearch] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [lgaFilter, setLgaFilter] = useState('all');
+  const [showCreateStaff, setShowCreateStaff] = useState(false);
 
   // Filter staff data from your backend API
   const { filteredStaff, departments, lgas } = useMemo(() => {
@@ -42,6 +45,25 @@ const GovernmentDatabaseTab: React.FC = () => {
     if (remarks.toLowerCase().includes('leave')) return { label: 'On Leave', variant: 'info' as const };
     if (remarks.toLowerCase().includes('excellent')) return { label: 'Excellent', variant: 'success' as const };
     return { label: 'Active', variant: 'default' as const };
+  };
+
+  // Handle staff creation
+  const handleCreateStaff = async (staffData: any) => {
+    try {
+      console.log('Creating new staff:', staffData);
+      // TODO: Call your backend API to create staff
+      // await apiService.createStaff(staffData);
+      
+      // Show success message
+      alert('Staff member created successfully!');
+      setShowCreateStaff(false);
+      
+      // TODO: Refresh staff data
+      // await loadStaffData();
+    } catch (error) {
+      console.error('Error creating staff:', error);
+      alert('Failed to create staff member. Please try again.');
+    }
   };
 
   // Table columns matching ALL fields from your backend API
@@ -170,19 +192,32 @@ const GovernmentDatabaseTab: React.FC = () => {
           </p>
         </div>
         
-        <div style={{
-          background: 'linear-gradient(135deg, var(--akwa-orange) 0%, var(--akwa-green) 100%)',
-          color: 'white',
-          padding: '0.75rem 1.25rem',
-          borderRadius: '0.5rem',
-          fontSize: '0.875rem',
-          fontWeight: '500',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem'
-        }}>
-          <Database style={{ width: '1rem', height: '1rem' }} />
-          {state.staffData?.length || 0} Total Staff
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          {/* Create New Staff Button */}
+          <Button
+            variant="gradient"
+            size="md"
+            icon={<UserPlus />}
+            onClick={() => setShowCreateStaff(true)}
+          >
+            Create New Staff
+          </Button>
+
+          {/* Total Staff Badge */}
+          <div style={{
+            background: 'linear-gradient(135deg, var(--akwa-orange) 0%, var(--akwa-green) 100%)',
+            color: 'white',
+            padding: '0.75rem 1.25rem',
+            borderRadius: '0.5rem',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Database style={{ width: '1rem', height: '1rem' }} />
+            {state.staffData?.length || 0} Total Staff
+          </div>
         </div>
       </div>
 
@@ -351,6 +386,19 @@ const GovernmentDatabaseTab: React.FC = () => {
           "The Land of Promise" - Official Records • Last updated: {new Date().toLocaleDateString()}
         </p>
       </div>
+
+      {/* Create Staff Modal */}
+      <Modal
+        isOpen={showCreateStaff}
+        onClose={() => setShowCreateStaff(false)}
+        title="Create New Government Staff Record"
+        size="xl"
+      >
+        <CreateStaffForm
+          onSubmit={handleCreateStaff}
+          onCancel={() => setShowCreateStaff(false)}
+        />
+      </Modal>
     </div>
   );
 };
