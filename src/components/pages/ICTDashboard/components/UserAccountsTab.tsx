@@ -1,5 +1,5 @@
 // src/components/pages/ICTDashboard/components/UserAccountsTab.tsx
-// User Accounts Management Tab - Compact Version
+// User Accounts Management Tab - Fixed ESLint Errors
 
 import React, { useState, useMemo } from 'react';
 import { Search, UserPlus, Shield, Key, Settings } from 'lucide-react';
@@ -54,8 +54,8 @@ const UserAccountsTab: React.FC<UserAccountsTabProps> = ({ users }) => {
   // Action handlers
   const handleAction = (user: any, action: string) => {
     const actions = {
-      reset: () => confirm(`Reset password for ${user.firstName} ${user.lastName}?`) && alert('Password reset email sent!'),
-      toggle: () => confirm(`${user.status === 'ACTIVE' ? 'Deactivate' : 'Activate'} ${user.firstName} ${user.lastName}?`) && alert('Status updated!'),
+      reset: () => window.confirm(`Reset password for ${user.firstName} ${user.lastName}?`) && alert('Password reset email sent!'),
+      toggle: () => window.confirm(`${user.status === 'ACTIVE' ? 'Deactivate' : 'Activate'} ${user.firstName} ${user.lastName}?`) && alert('Status updated!'),
       permissions: () => alert('Permissions management coming soon!')
     };
     actions[action as keyof typeof actions]?.();
