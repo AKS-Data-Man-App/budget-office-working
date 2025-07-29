@@ -23,6 +23,17 @@ const GovernmentDatabaseTab: React.FC = () => {
 
   const isICTHead = state.user?.role === 'ICT_HEAD';
 
+  // Debug function - check staff data structure
+  const debugStaffData = () => {
+    if (state.staffData && state.staffData.length > 0) {
+      console.log('Staff data structure:', state.staffData[0]);
+      console.log('All field names:', Object.keys(state.staffData[0]));
+      toast.success(`Check console for staff data structure. Found ${state.staffData.length} staff records.`);
+    } else {
+      toast.error('No staff data available');
+    }
+  };
+
   // Filter staff data
   const { filteredStaff, departments, lgas } = useMemo(() => {
     const data = state.staffData || [];
@@ -100,7 +111,13 @@ const GovernmentDatabaseTab: React.FC = () => {
           break;
 
         case 'update':
-          result = await apiCall(`/api/v1/staff/${selectedStaff.id}`, 'PUT', transformStaffData(staffData));
+          // Use the correct ID field
+          const updateStaffId = selectedStaff.id || selectedStaff.employeeId || selectedStaff._id;
+          if (!updateStaffId) {
+            toast.error('Cannot update: Staff ID not found', { id: loadingToast! });
+            return;
+          }
+          result = await apiCall(`/api/v1/staff/${updateStaffId}`, 'PUT', transformStaffData(staffData));
           toast.success(
             `Staff member ${staffData.firstName} ${staffData.lastName} updated successfully!`,
             { id: loadingToast!, duration: 5000 }
@@ -116,7 +133,14 @@ const GovernmentDatabaseTab: React.FC = () => {
             toast.dismiss(loadingToast!);
             return;
           }
-          result = await apiCall(`/api/v1/staff/${staff.id}`, 'DELETE');
+          // Use the correct ID field - check multiple possibilities
+          const staffId = staff.id || staff.employeeId || staff._id;
+          if (!staffId) {
+            toast.error('Cannot delete: Staff ID not found', { id: loadingToast! });
+            return;
+          }
+          console.log('Deleting staff with ID:', staffId);
+          result = await apiCall(`/api/v1/staff/${staffId}`, 'DELETE');
           toast.success(
             `Staff member ${staff.firstName || staff.nameOfOfficer} ${staff.lastName} deleted successfully!`,
             { id: loadingToast!, duration: 5000 }
@@ -126,7 +150,13 @@ const GovernmentDatabaseTab: React.FC = () => {
           break;
 
         case 'view':
-          result = await apiCall(`/api/v1/staff/${staff.id}`);
+          // Use the correct ID field
+          const viewStaffId = staff.id || staff.employeeId || staff._id;
+          if (!viewStaffId) {
+            toast.error('Cannot view: Staff ID not found');
+            return;
+          }
+          result = await apiCall(`/api/v1/staff/${viewStaffId}`);
           const staffInfo = result.data;
           toast(
             (t) => (
@@ -312,6 +342,7 @@ const GovernmentDatabaseTab: React.FC = () => {
           {lgas.map(lga => <option key={lga} value={lga}>{lga}</option>)}
         </select>
         <Button variant="success" size="sm" icon={<Download />} onClick={handleExport}>Export</Button>
+        <Button variant="secondary" size="sm" onClick={debugStaffData}>Debug Data</Button>
         {(search || departmentFilter !== 'all' || lgaFilter !== 'all') && (
           <Button variant="ghost" size="sm" onClick={() => { setSearch(''); setDepartmentFilter('all'); setLgaFilter('all'); }}>Clear</Button>
         )}
