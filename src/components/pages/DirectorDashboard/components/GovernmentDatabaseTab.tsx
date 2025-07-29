@@ -34,17 +34,47 @@ const GovernmentDatabaseTab: React.FC = () => {
     }
   };
 
+  // Force load full staff data with IDs (for ICT Head)
+  const loadFullStaffData = async () => {
+    const loadingToast = toast.loading('Loading full staff data with IDs...');
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('https://budget-office-backend.onrender.com/api/v1/staff', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        // Manually update the staffData with full data
+        state.dispatch({ type: 'SET_STAFF_DATA', payload: result.data });
+        toast.success(`Loaded ${result.data.length} staff records with IDs!`, { id: loadingToast });
+        console.log('Full staff data loaded:', result.data[0]);
+      } else {
+        toast.error('Failed to load full staff data', { id: loadingToast });
+      }
+    } catch (error) {
+      toast.error('Error loading staff data', { id: loadingToast });
+      console.error('Error:', error);
+    }
+  };
+
   // Filter staff data
   const { filteredStaff, departments, lgas } = useMemo(() => {
     const data = state.staffData || [];
     const filtered = data.filter((staff: any) => {
-      const searchMatch = !search || `${staff.firstName || staff.nameOfOfficer} ${staff.lastName} ${staff.rank} ${staff.department} ${staff.lga}`.toLowerCase().includes(search.toLowerCase());
-      const deptMatch = departmentFilter === 'all' || staff.department === departmentFilter;
+      // Handle both data formats safely
+      const name = staff.nameOfOfficer || `${staff.firstName || ''} ${staff.lastName || ''}`.trim();
+      const dept = staff.department?.name || staff.department || '';
+      const searchMatch = !search || `${name} ${staff.rank} ${dept} ${staff.lga}`.toLowerCase().includes(search.toLowerCase());
+      const deptMatch = departmentFilter === 'all' || dept === departmentFilter;
       const lgaMatch = lgaFilter === 'all' || staff.lga === lgaFilter;
       return searchMatch && deptMatch && lgaMatch;
     });
-    const departments = Array.from(new Set(data.map((s: any) => s.department))).sort();
-    const lgas = Array.from(new Set(data.map((s: any) => s.lga))).sort();
+    
+    // Extract unique departments and LGAs safely
+    const departments = Array.from(new Set(data.map((s: any) => s.department?.name || s.department).filter(Boolean))).sort();
+    const lgas = Array.from(new Set(data.map((s: any) => s.lga).filter(Boolean))).sort();
+    
     return { filteredStaff: filtered, departments, lgas };
   }, [state.staffData, search, departmentFilter, lgaFilter]);
 
@@ -135,8 +165,11 @@ const GovernmentDatabaseTab: React.FC = () => {
           }
           // Use the correct ID field - check multiple possibilities
           const staffId = staff.id || staff.employeeId || staff._id;
+          console.log('Staff object for delete:', staff);
+          console.log('Available ID fields:', { id: staff.id, employeeId: staff.employeeId, sn: staff.sn });
+          
           if (!staffId) {
-            toast.error('Cannot delete: Staff ID not found', { id: loadingToast! });
+            toast.error('Cannot delete: Staff ID not found. Check console for staff object details.', { id: loadingToast! });
             return;
           }
           console.log('Deleting staff with ID:', staffId);
@@ -166,7 +199,7 @@ const GovernmentDatabaseTab: React.FC = () => {
                 </div>
                 <div style={{ fontSize: '0.875rem', color: '#6B7280', lineHeight: '1.4' }}>
                   <div><strong>Rank:</strong> {staffInfo.rank}</div>
-                  <div><strong>Department:</strong> {staffInfo.department?.name || 'N/A'}</div>
+                  <div><strong>Department:</strong> {staffInfo.department?.name || staffInfo.department || 'N/A'}</div>
                   <div><strong>Grade:</strong> {staffInfo.gradeLevel} Step {staffInfo.step}</div>
                   <div><strong>Email:</strong> {staffInfo.email || 'N/A'}</div>
                 </div>
@@ -258,7 +291,10 @@ const GovernmentDatabaseTab: React.FC = () => {
         </div>
       )
     },
-    { key: 'department', header: 'Department', width: '160px', render: (_, staff: any) => <div style={{ fontSize: '0.875rem', color: '#374151' }}>{staff.department?.name || staff.department}</div> },
+    { key: 'department', header: 'Department', width: '160px', render: (_, staff: any) => {
+      const departmentName = staff.department?.name || staff.department || 'N/A';
+      return <div style={{ fontSize: '0.875rem', color: '#374151' }}>{departmentName}</div>;
+    }},
     {
       key: 'status', header: 'Status', width: '120px',
       render: (_, staff: any) => {
@@ -343,6 +379,9 @@ const GovernmentDatabaseTab: React.FC = () => {
         </select>
         <Button variant="success" size="sm" icon={<Download />} onClick={handleExport}>Export</Button>
         <Button variant="secondary" size="sm" onClick={debugStaffData}>Debug Data</Button>
+        {isICTHead && (
+          <Button variant="primary" size="sm" onClick={loadFullStaffData}>Load Full Data</Button>
+        )}
         {(search || departmentFilter !== 'all' || lgaFilter !== 'all') && (
           <Button variant="ghost" size="sm" onClick={() => { setSearch(''); setDepartmentFilter('all'); setLgaFilter('all'); }}>Clear</Button>
         )}
