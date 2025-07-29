@@ -105,14 +105,60 @@ const GovernmentDatabaseTab: React.FC = () => {
           break;
 
         case 'delete':
-          if (!window.confirm(`Delete ${staff.firstName || staff.nameOfOfficer} ${staff.lastName}?`)) {
-            toast.dismiss(loadingToast!); return;
-          }
+          // Custom toast confirmation instead of window.confirm
           const deleteId = staff.id || staff.employeeId;
-          if (!deleteId) { toast.error('Staff ID not found', { id: loadingToast! }); return; }
-          result = await apiCall(`/api/v1/staff/${deleteId}`, 'DELETE');
-          toast.success(`${staff.firstName || staff.nameOfOfficer} ${staff.lastName} deleted successfully!`, { id: loadingToast! });
-          await loadNominalRoll();
+          if (!deleteId) { toast.error('Staff ID not found'); return; }
+          
+          toast((t) => (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', minWidth: '300px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', backgroundColor: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Trash2 style={{ width: '1.5rem', height: '1.5rem', color: '#EF4444' }} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', color: '#111827', fontSize: '1rem' }}>Delete Staff Member</div>
+                  <div style={{ color: '#6B7280', fontSize: '0.875rem' }}>This action cannot be undone</div>
+                </div>
+              </div>
+              
+              <div style={{ padding: '0.75rem', backgroundColor: '#F9FAFB', borderRadius: '0.5rem', border: '1px solid #E5E7EB' }}>
+                <div style={{ fontWeight: '500', color: '#374151' }}>
+                  {staff.firstName || staff.nameOfOfficer} {staff.lastName}
+                </div>
+                <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>
+                  {staff.rank} • {staff.department?.name || staff.department}
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  style={{ padding: '0.5rem 1rem', backgroundColor: '#F3F4F6', color: '#374151', border: 'none', borderRadius: '0.375rem', fontSize: '0.875rem', cursor: 'pointer', fontWeight: '500' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    toast.dismiss(t.id);
+                    const deleteToast = toast.loading('Deleting staff member...');
+                    try {
+                      await apiCall(`/api/v1/staff/${deleteId}`, 'DELETE');
+                      toast.success(`${staff.firstName || staff.nameOfOfficer} ${staff.lastName} deleted successfully!`, { id: deleteToast });
+                      await loadNominalRoll();
+                    } catch (error) {
+                      toast.error(`Failed to delete staff: ${error instanceof Error ? error.message : 'Unknown error'}`, { id: deleteToast });
+                    }
+                  }}
+                  style={{ padding: '0.5rem 1rem', backgroundColor: '#EF4444', color: 'white', border: 'none', borderRadius: '0.375rem', fontSize: '0.875rem', cursor: 'pointer', fontWeight: '500' }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ), {
+            duration: Infinity, // Stay open until user decides
+            position: 'top-center'
+          });
           break;
 
         case 'view':
