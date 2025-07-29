@@ -146,22 +146,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       const userRole = role || state.user?.role;
       
-      if (userRole === 'ICT_HEAD') {
-        // ICT Head needs full staff data with IDs for CRUD operations
-        console.log('🔧 Loading full staff data for ICT Head...');
-        const response = await apiService.getAllStaff();
-        if (response.success && response.data) {
-          console.log('✅ Full staff data loaded:', response.data.length, 'records with IDs');
-          dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
-        }
-      } else {
-        // Director and Staff get the nominal roll format (14 columns)
-        console.log('📊 Loading nominal roll for Director/Staff...');
-        const response: NominalRollResponse = await apiService.getNominalRoll();
-        if (response.success && response.data) {
-          console.log('✅ Nominal roll loaded:', response.data.length, 'records');
-          dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
-        }
+      // For now, load nominal roll for display (shows all staff)
+      // ICT Head will use full API for CRUD operations when needed
+      console.log('📊 Loading nominal roll for all users...');
+      const response: NominalRollResponse = await apiService.getNominalRoll();
+      if (response.success && response.data) {
+        console.log('✅ Nominal roll loaded:', response.data.length, 'records');
+        dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
       }
     } catch (error) {
       console.error('Failed to load staff data:', error);
