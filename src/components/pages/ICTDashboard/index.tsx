@@ -1,5 +1,5 @@
 // src/components/pages/ICTDashboard/index.tsx
-// ICT Head Dashboard - Clean Main Component
+// ICT Head Dashboard - Expanded Layout for Government Database
 
 import React, { useState } from 'react';
 import { useAppContext } from '../../../context/AppContext';
@@ -59,9 +59,28 @@ const ICTDashboard: React.FC = () => {
     }
   };
 
+  // Dynamic container styles based on active tab
+  const getContainerStyles = () => {
+    if (activeTab === 'staff') {
+      // Full width for Government Database
+      return {
+        padding: '2rem 1rem',
+        maxWidth: '100%',
+        margin: '0'
+      };
+    } else {
+      // Standard width for other tabs
+      return {
+        padding: '2rem',
+        maxWidth: '1280px',
+        margin: '0 auto'
+      };
+    }
+  };
+
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#F9FAFB' }}>
-      {/* Header */}
+      {/* Header - Full width */}
       <header style={{
         background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
         color: 'white',
@@ -131,16 +150,18 @@ const ICTDashboard: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <div style={{ padding: '2rem', maxWidth: '1280px', margin: '0 auto' }}>
-        {/* Stats Cards */}
-        <div style={{ marginBottom: '2rem' }}>
-          <StatsCards 
-            staffCount={staffCount}
-            userCount={userCount}
-            onCreateStaff={() => setShowCreateStaff(true)}
-          />
-        </div>
+      {/* Main Content - Dynamic width based on active tab */}
+      <div style={getContainerStyles()}>
+        {/* Stats Cards - Only show for non-staff tabs to save space */}
+        {activeTab !== 'staff' && (
+          <div style={{ marginBottom: '2rem' }}>
+            <StatsCards 
+              staffCount={staffCount}
+              userCount={userCount}
+              onCreateStaff={() => setShowCreateStaff(true)}
+            />
+          </div>
+        )}
 
         {/* Tab Navigation */}
         <div style={{
@@ -188,14 +209,19 @@ const ICTDashboard: React.FC = () => {
             })}
           </div>
 
-          {/* Tab Content */}
-          <div style={{ padding: '2rem', minHeight: '500px', backgroundColor: 'white' }}>
+          {/* Tab Content - More padding for Government Database */}
+          <div style={{ 
+            padding: activeTab === 'staff' ? '1.5rem' : '2rem', 
+            minHeight: '500px', 
+            backgroundColor: 'white',
+            overflow: 'auto' // Allow horizontal scroll if needed
+          }}>
             {renderTabContent()}
           </div>
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer - Full width */}
       <footer style={{
         background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)',
         color: 'white',
