@@ -24,12 +24,17 @@ const GovernmentDatabaseTab: React.FC = () => {
   const isICTHead = state.user?.role === 'ICT_HEAD';
 
   // Get full staff record with ID for CRUD operations
-  const getFullStaffRecord = async (staffEmployeeId: string) => {
+  const getFullStaffRecord = async (staffIdentifier: string) => {
     try {
-      // Try to get full record by employeeId since nominal roll doesn't have database IDs
+      // Try to get full record by employeeId or serial number since nominal roll doesn't have database IDs
       const response = await apiCall('/api/v1/staff');
       const fullStaffList = response.data;
-      return fullStaffList.find((s: any) => s.employeeId === staffEmployeeId);
+      // Try to match by employeeId first, then by name if needed
+      return fullStaffList.find((s: any) => 
+        s.employeeId === staffIdentifier || 
+        s.sn?.toString() === staffIdentifier ||
+        `${s.firstName} ${s.lastName}` === staffIdentifier
+      );
     } catch (error) {
       console.error('Failed to get full staff record:', error);
       return null;
@@ -189,7 +194,7 @@ const GovernmentDatabaseTab: React.FC = () => {
     }
   };
 
-  // Table columns
+  // Table columns - Complete government format (14 columns like paper form)
   const getGradeColor = (grade: string) => {
     const level = parseInt(grade?.replace('GL-', '') || '0');
     return level >= 17 ? 'danger' : level >= 15 ? 'warning' : level >= 12 ? 'primary' : 'info';
@@ -201,32 +206,30 @@ const GovernmentDatabaseTab: React.FC = () => {
       key: 'officer', header: 'Name of Officer', width: '200px',
       render: (_, staff: any) => (
         <div>
-          <div style={{ fontWeight: '500' }}>{staff.firstName || staff.nameOfOfficer} {staff.lastName}</div>
+          <div style={{ fontWeight: '500', fontSize: '0.875rem' }}>{staff.firstName || staff.nameOfOfficer} {staff.lastName}</div>
           <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>{staff.sex} • {staff.lga}</div>
         </div>
       )
     },
-    { key: 'employeeId', header: 'Employee ID', width: '120px', render: (_, staff: any) => staff.employeeId || 'N/A' },
-    { key: 'rank', header: 'Rank', width: '180px', render: (rank: string) => rank },
+    { key: 'employeeId', header: 'Employee ID', width: '120px', render: (_, staff: any) => staff.employeeId || staff.sn || 'N/A' },
+    { key: 'rank', header: 'Rank', width: '180px', render: (_, staff: any) => staff.rank || 'N/A' },
     {
       key: 'grade', header: 'Grade Level', width: '120px',
       render: (_, staff: any) => (
         <div>
-          <Badge variant={getGradeColor(staff.gradeLevel)} size="sm">{staff.gradeLevel}</Badge>
-          <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>Step {staff.step}</div>
+          <Badge variant={getGradeColor(staff.gradeLevel)} size="sm">{staff.gradeLevel || 'N/A'}</Badge>
+          <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>Step {staff.step || 'N/A'}</div>
         </div>
       )
     },
+    { key: 'dateOfBirth', header: 'Date of Birth', width: '120px', render: (_, staff: any) => staff.dateOfBirth || 'N/A' },
+    { key: 'dateOfFirstAppointment', header: 'First Appointment', width: '130px', render: (_, staff: any) => staff.dateOfFirstAppointment || 'N/A' },
+    { key: 'dateOfConfirmation', header: 'Date of Confirmation', width: '130px', render: (_, staff: any) => staff.dateOfConfirmation || 'N/A' },
+    { key: 'dateOfLastPromotion', header: 'Last Promotion', width: '130px', render: (_, staff: any) => staff.dateOfLastPromotion || 'N/A' },
+    { key: 'educationalQualification', header: 'Educational Qualification', width: '200px', render: (_, staff: any) => staff.educationalQualification || 'N/A' },
+    { key: 'dateOfRetirement', header: 'Date of Retirement', width: '130px', render: (_, staff: any) => staff.dateOfRetirement || 'N/A' },
     { key: 'department', header: 'Department', width: '160px', render: (_, staff: any) => staff.department?.name || staff.department || 'N/A' },
-    {
-      key: 'status', header: 'Status', width: '120px',
-      render: (_, staff: any) => {
-        const remarks = staff.remarks || '';
-        const variant = remarks.includes('retirement') ? 'warning' : remarks.includes('excellent') ? 'success' : 'default';
-        const label = remarks.includes('retirement') ? 'Due for Retirement' : remarks.includes('leave') ? 'On Leave' : 'Active';
-        return <Badge variant={variant} size="sm">{label}</Badge>;
-      }
-    }
+    { key: 'remarks', header: 'Remarks', width: '150px', render: (_, staff: any) => staff.remarks || 'N/A' }
   ];
 
   // Add actions for ICT Head
