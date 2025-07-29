@@ -194,42 +194,42 @@ const GovernmentDatabaseTab: React.FC = () => {
     }
   };
 
-  // Table columns - Complete government format (14 columns like paper form)
+  // Table columns - Complete government format (optimized widths for no scroll)
   const getGradeColor = (grade: string) => {
     const level = parseInt(grade?.replace('GL-', '') || '0');
     return level >= 17 ? 'danger' : level >= 15 ? 'warning' : level >= 12 ? 'primary' : 'info';
   };
 
   const columns: TableColumn[] = [
-    { key: 'sn', header: 'S/N', width: '60px', render: (sn: number) => sn },
+    { key: 'sn', header: 'S/N', width: '50px', render: (sn: number) => sn },
     {
-      key: 'officer', header: 'Name of Officer', width: '200px',
+      key: 'officer', header: 'Name of Officer', width: '150px',
       render: (_, staff: any) => (
         <div>
-          <div style={{ fontWeight: '500', fontSize: '0.875rem' }}>{staff.firstName || staff.nameOfOfficer} {staff.lastName}</div>
-          <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>{staff.sex} • {staff.lga}</div>
+          <div style={{ fontWeight: '500', fontSize: '0.8rem' }}>{staff.firstName || staff.nameOfOfficer} {staff.lastName}</div>
+          <div style={{ fontSize: '0.7rem', color: '#6B7280' }}>{staff.sex} • {staff.lga}</div>
         </div>
       )
     },
-    { key: 'employeeId', header: 'Employee ID', width: '120px', render: (_, staff: any) => staff.employeeId || staff.sn || 'N/A' },
-    { key: 'rank', header: 'Rank', width: '180px', render: (_, staff: any) => staff.rank || 'N/A' },
+    { key: 'employeeId', header: 'Employee ID', width: '80px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.employeeId || staff.sn || 'N/A'}</div> },
+    { key: 'rank', header: 'Rank', width: '140px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.rank || 'N/A'}</div> },
     {
-      key: 'grade', header: 'Grade Level', width: '120px',
+      key: 'grade', header: 'Grade Level', width: '90px',
       render: (_, staff: any) => (
         <div>
           <Badge variant={getGradeColor(staff.gradeLevel)} size="sm">{staff.gradeLevel || 'N/A'}</Badge>
-          <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>Step {staff.step || 'N/A'}</div>
+          <div style={{ fontSize: '0.7rem', color: '#6B7280' }}>Step {staff.step || 'N/A'}</div>
         </div>
       )
     },
-    { key: 'dateOfBirth', header: 'Date of Birth', width: '120px', render: (_, staff: any) => staff.dateOfBirth || 'N/A' },
-    { key: 'dateOfFirstAppointment', header: 'First Appointment', width: '130px', render: (_, staff: any) => staff.dateOfFirstAppointment || 'N/A' },
-    { key: 'dateOfConfirmation', header: 'Date of Confirmation', width: '130px', render: (_, staff: any) => staff.dateOfConfirmation || 'N/A' },
-    { key: 'dateOfLastPromotion', header: 'Last Promotion', width: '130px', render: (_, staff: any) => staff.dateOfLastPromotion || 'N/A' },
-    { key: 'educationalQualification', header: 'Educational Qualification', width: '200px', render: (_, staff: any) => staff.educationalQualification || 'N/A' },
-    { key: 'dateOfRetirement', header: 'Date of Retirement', width: '130px', render: (_, staff: any) => staff.dateOfRetirement || 'N/A' },
-    { key: 'department', header: 'Department', width: '160px', render: (_, staff: any) => staff.department?.name || staff.department || 'N/A' },
-    { key: 'remarks', header: 'Remarks', width: '150px', render: (_, staff: any) => staff.remarks || 'N/A' }
+    { key: 'dateOfBirth', header: 'Date of Birth', width: '90px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.dateOfBirth || 'N/A'}</div> },
+    { key: 'dateOfFirstAppointment', header: 'First Appointment', width: '100px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.dateOfFirstAppointment || 'N/A'}</div> },
+    { key: 'dateOfConfirmation', header: 'Confirmation', width: '90px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.dateOfConfirmation || 'N/A'}</div> },
+    { key: 'dateOfLastPromotion', header: 'Last Promotion', width: '90px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.dateOfLastPromotion || 'N/A'}</div> },
+    { key: 'educationalQualification', header: 'Education', width: '120px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }} title={staff.educationalQualification}>{staff.educationalQualification || 'N/A'}</div> },
+    { key: 'dateOfRetirement', header: 'Retirement', width: '90px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.dateOfRetirement || 'N/A'}</div> },
+    { key: 'department', header: 'Department', width: '110px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }}>{staff.department?.name || staff.department || 'N/A'}</div> },
+    { key: 'remarks', header: 'Remarks', width: '100px', render: (_, staff: any) => <div style={{ fontSize: '0.8rem' }} title={staff.remarks}>{staff.remarks || 'N/A'}</div> }
   ];
 
   // Add actions for ICT Head
@@ -316,8 +316,17 @@ const GovernmentDatabaseTab: React.FC = () => {
         {isICTHead && <span style={{ marginLeft: '1rem', color: 'var(--akwa-green)', fontWeight: '500' }}>• Full database access enabled</span>}
       </div>
 
-      {/* Table */}
-      <Table columns={columns} data={filteredStaff} keyField="id" loading={state.isLoading || isLoading} emptyMessage="No staff records found" size="md" />
+      {/* Table - Full width, no scroll - REMOVED style prop */}
+      <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
+        <Table 
+          columns={columns} 
+          data={filteredStaff} 
+          keyField="sn" 
+          loading={state.isLoading || isLoading} 
+          emptyMessage="No staff records found" 
+          size="sm"
+        />
+      </div>
 
       {/* Footer */}
       <div style={{ backgroundColor: '#F9FAFB', padding: '1.5rem', borderRadius: '0.5rem', border: '1px solid #E5E7EB', textAlign: 'center' }}>
