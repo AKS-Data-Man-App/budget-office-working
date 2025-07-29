@@ -137,10 +137,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const loadNominalRoll = async (): Promise<void> => {
     try {
-      const response: NominalRollResponse = await apiService.getNominalRoll();
-      if (response.success && response.data) dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
+      // ICT Head needs full staff data with IDs for CRUD operations
+      if (state.user?.role === 'ICT_HEAD') {
+        const response = await apiService.getAllStaff();
+        if (response.success && response.data) dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
+      } else {
+        // Others get the nominal roll format (14 columns)
+        const response: NominalRollResponse = await apiService.getNominalRoll();
+        if (response.success && response.data) dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
+      }
     } catch (error) {
-      console.error('Failed to load nominal roll:', error);
+      console.error('Failed to load staff data:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to load staff data' });
     }
   };
