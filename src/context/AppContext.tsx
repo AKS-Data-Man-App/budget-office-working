@@ -32,20 +32,26 @@ const getRoleDashboard = (role: UserRole): AppPage => {
   return dashboards[role] || 'login';
 };
 
-const filterStaffData = (staffData: StaffRecord[], searchTerm: string, filter: string): StaffRecord[] => {
+const filterStaffData = (staffData: any[], searchTerm: string, filter: string): any[] => {
   let filtered = staffData;
   if (searchTerm.trim()) {
     const searchLower = searchTerm.toLowerCase();
-    filtered = filtered.filter(staff => 
-      (staff.nameOfOfficer || `${staff.firstName} ${staff.lastName}`).toLowerCase().includes(searchLower) ||
-      staff.rank.toLowerCase().includes(searchLower) ||
-      (staff.department?.name || staff.department || '').toLowerCase().includes(searchLower) ||
-      staff.lga.toLowerCase().includes(searchLower)
-    );
+    filtered = filtered.filter(staff => {
+      // Handle both nominal roll format and full staff data format
+      const name = staff.nameOfOfficer || `${staff.firstName || ''} ${staff.lastName || ''}`.trim();
+      const department = staff.department?.name || staff.department || '';
+      const rank = staff.rank || '';
+      const lga = staff.lga || '';
+      
+      return name.toLowerCase().includes(searchLower) ||
+             rank.toLowerCase().includes(searchLower) ||
+             department.toLowerCase().includes(searchLower) ||
+             lga.toLowerCase().includes(searchLower);
+    });
   }
   if (filter !== 'all') {
     const filterMap: Record<string, string> = { 'due-for-promotion': 'promotion', 'due-for-retirement': 'retirement', 'on-leave': 'leave' };
-    filtered = filtered.filter(staff => staff.remarks?.toLowerCase().includes(filterMap[filter] || ''));
+    filtered = filtered.filter(staff => (staff.remarks || '').toLowerCase().includes(filterMap[filter] || ''));
   }
   return filtered;
 };
