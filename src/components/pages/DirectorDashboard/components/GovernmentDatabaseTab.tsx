@@ -23,34 +23,16 @@ const GovernmentDatabaseTab: React.FC = () => {
 
   const isICTHead = state.user?.role === 'ICT_HEAD';
 
-  // Debug function to check data loading
-  const debugDataLoading = async () => {
-    console.log('=== DEBUG DATA LOADING ===');
-    console.log('Current user role:', state.user?.role);
-    console.log('Staff data count:', state.staffData?.length);
-    console.log('First staff record:', state.staffData?.[0]);
-    
-    // Test direct API call
+  // Get full staff record with ID for CRUD operations
+  const getFullStaffRecord = async (staffEmployeeId: string) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('https://budget-office-backend.onrender.com/api/v1/staff', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const result = await response.json();
-      console.log('Direct API call - Full staff count:', result.data?.length);
-      console.log('Direct API call - First record:', result.data?.[0]);
-      
-      if (result.data && result.data.length > state.staffData?.length) {
-        toast.error(`Found ${result.data.length} records in API but only ${state.staffData?.length} in state!`);
-        // Update with correct data
-        dispatch({ type: 'SET_STAFF_DATA', payload: result.data });
-        toast.success(`Loaded ${result.data.length} staff records successfully!`);
-      } else {
-        toast.success(`Data is correct: ${state.staffData?.length} records loaded`);
-      }
+      // Try to get full record by employeeId since nominal roll doesn't have database IDs
+      const response = await apiCall('/api/v1/staff');
+      const fullStaffList = response.data;
+      return fullStaffList.find((s: any) => s.employeeId === staffEmployeeId);
     } catch (error) {
-      console.error('API test error:', error);
-      toast.error('Failed to test API call');
+      console.error('Failed to get full staff record:', error);
+      return null;
     }
   };
 
@@ -320,11 +302,6 @@ const GovernmentDatabaseTab: React.FC = () => {
         <Button variant="success" size="sm" icon={<Download />} onClick={() => toast.promise(new Promise(resolve => setTimeout(() => resolve(`${filteredStaff.length} records exported`), 2000)), { loading: 'Exporting...', success: (msg) => `${msg} successfully!`, error: 'Export failed' })}>
           Export
         </Button>
-        {isICTHead && (
-          <Button variant="warning" size="sm" onClick={debugDataLoading}>
-            Debug Data
-          </Button>
-        )}
         {(search || departmentFilter !== 'all' || lgaFilter !== 'all') && (
           <Button variant="ghost" size="sm" onClick={() => { setSearch(''); setDepartmentFilter('all'); setLgaFilter('all'); }}>Clear</Button>
         )}
