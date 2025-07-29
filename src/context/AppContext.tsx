@@ -37,15 +37,15 @@ const filterStaffData = (staffData: StaffRecord[], searchTerm: string, filter: s
   if (searchTerm.trim()) {
     const searchLower = searchTerm.toLowerCase();
     filtered = filtered.filter(staff => 
-      staff.nameOfOfficer.toLowerCase().includes(searchLower) ||
+      (staff.nameOfOfficer || `${staff.firstName} ${staff.lastName}`).toLowerCase().includes(searchLower) ||
       staff.rank.toLowerCase().includes(searchLower) ||
-      staff.department.toLowerCase().includes(searchLower) ||
+      (staff.department?.name || staff.department || '').toLowerCase().includes(searchLower) ||
       staff.lga.toLowerCase().includes(searchLower)
     );
   }
   if (filter !== 'all') {
     const filterMap: Record<string, string> = { 'due-for-promotion': 'promotion', 'due-for-retirement': 'retirement', 'on-leave': 'leave' };
-    filtered = filtered.filter(staff => staff.remarks.toLowerCase().includes(filterMap[filter] || ''));
+    filtered = filtered.filter(staff => staff.remarks?.toLowerCase().includes(filterMap[filter] || ''));
   }
   return filtered;
 };
@@ -128,28 +128,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const loadInitialData = async (role: UserRole): Promise<void> => {
     try {
-      await loadNominalRoll();
+      await loadStaffData(role);
       if (role === 'ORGANIZATION_HEAD' || role === 'ICT_HEAD') await loadAllUsers();
     } catch (error) {
       console.error('Failed to load initial data:', error);
     }
   };
 
-  const loadNominalRoll = async (): Promise<void> => {
+  // Role-aware staff data loading
+  const loadStaffData = async (role?: UserRole): Promise<void> => {
     try {
-      // ICT Head needs full staff data with IDs for CRUD operations
-      if (state.user?.role === 'ICT_HEAD') {
+      const userRole = role || state.user?.role;
+      
+      if (userRole === 'ICT_HEAD') {
+        // ICT Head needs full staff data with IDs for CRUD operations
+        console.log('🔧 Loading full staff data for ICT Head...');
         const response = await apiService.getAllStaff();
-        if (response.success && response.data) dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
+        if (response.success && response.data) {
+          console.log('✅ Full staff data loaded:', response.data.length, 'records with IDs');
+          dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
+        }
       } else {
-        // Others get the nominal roll format (14 columns)
+        // Director and Staff get the nominal roll format (14 columns)
+        console.log('📊 Loading nominal roll for Director/Staff...');
         const response: NominalRollResponse = await apiService.getNominalRoll();
-        if (response.success && response.data) dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
+        if (response.success && response.data) {
+          console.log('✅ Nominal roll loaded:', response.data.length, 'records');
+          dispatch({ type: 'SET_STAFF_DATA', payload: response.data });
+        }
       }
     } catch (error) {
       console.error('Failed to load staff data:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to load staff data' });
     }
+  };
+
+  // Public method for manual refresh (keeps original name for compatibility)
+  const loadNominalRoll = async (): Promise<void> => {
+    await loadStaffData();
   };
 
   const loadAllUsers = async (): Promise<void> => {
