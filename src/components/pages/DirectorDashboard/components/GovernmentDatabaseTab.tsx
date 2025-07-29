@@ -24,17 +24,36 @@ const GovernmentDatabaseTab: React.FC = () => {
   const isICTHead = state.user?.role === 'ICT_HEAD';
 
   // Get full staff record with ID for CRUD operations
-  const getFullStaffRecord = async (staffIdentifier: string) => {
+  const getFullStaffRecord = async (nominalStaff: any) => {
     try {
-      // Try to get full record by employeeId or serial number since nominal roll doesn't have database IDs
+      console.log('🔍 Finding full record for:', nominalStaff);
       const response = await apiCall('/api/v1/staff');
       const fullStaffList = response.data;
-      // Try to match by employeeId first, then by name if needed
-      return fullStaffList.find((s: any) => 
-        s.employeeId === staffIdentifier || 
-        s.sn?.toString() === staffIdentifier ||
-        `${s.firstName} ${s.lastName}` === staffIdentifier
-      );
+      console.log('📋 Full staff list:', fullStaffList);
+      
+      // Try multiple matching strategies
+      const nominalName = nominalStaff.nameOfOfficer || `${nominalStaff.firstName || ''} ${nominalStaff.lastName || ''}`.trim();
+      console.log('🎯 Searching for name:', nominalName);
+      
+      const match = fullStaffList.find((s: any) => {
+        const fullName = `${s.firstName || ''} ${s.lastName || ''}`.trim();
+        console.log('🔍 Comparing:', nominalName, 'vs', fullName);
+        
+        return (
+          // Match by employee ID
+          (s.employeeId && nominalStaff.employeeId && s.employeeId === nominalStaff.employeeId) ||
+          // Match by serial number
+          (s.sn && nominalStaff.sn && s.sn.toString() === nominalStaff.sn.toString()) ||
+          // Match by full name (case insensitive)
+          (nominalName.toLowerCase() === fullName.toLowerCase()) ||
+          // Match by partial name
+          (nominalName.toLowerCase().includes(s.firstName?.toLowerCase() || '') && 
+           nominalName.toLowerCase().includes(s.lastName?.toLowerCase() || ''))
+        );
+      });
+      
+      console.log('✅ Found match:', match);
+      return match;
     } catch (error) {
       console.error('Failed to get full staff record:', error);
       return null;
@@ -123,9 +142,19 @@ const GovernmentDatabaseTab: React.FC = () => {
           break;
 
         case 'delete':
-          // Custom toast confirmation instead of window.confirm
-          const deleteId = staff.id || staff.employeeId;
-          if (!deleteId) { toast.error('Staff ID not found'); return; }
+          // Get full staff record first to get the database ID
+          console.log('🗑️ Attempting to delete staff:', staff);
+          const fullStaffRecord = await getFullStaffRecord(staff);
+          const deleteId = fullStaffRecord?.id;
+          
+          if (!deleteId) { 
+            console.error('❌ No database ID found for staff:', staff);
+            console.error('❌ Full staff record:', fullStaffRecord);
+            toast.error('Unable to locate staff record for deletion. Please try refreshing the page.'); 
+            return; 
+          }
+          
+          console.log('✅ Found database ID:', deleteId, 'for staff:', fullStaffRecord);
           
           toast((t) => (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', minWidth: '300px' }}>
