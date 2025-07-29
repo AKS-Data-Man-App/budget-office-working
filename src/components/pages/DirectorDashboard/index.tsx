@@ -90,13 +90,8 @@ const DirectorDashboard: React.FC = () => {
         return <OverviewTab />;
       
       case 'users':
-        return (
-          <UsersTab
-            users={(state.allUsers.length ? state.allUsers : mockUsers) as any}
-            onCreateUser={handleCreateUser}
-            loading={state.isLoading}
-          />
-        );
+        // UsersTab is now self-contained, no props needed
+        return <UsersTab />;
       
       case 'approvals':
         // ApprovalsTab is now self-contained, no props needed
