@@ -1,9 +1,9 @@
 // src/components/pages/StaffDashboard.tsx  
-// Staff Dashboard - Simple Read-Only Access
+// Staff Dashboard - Beautiful Government Portal Design
 
 import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import { FileText, Users, Search } from 'lucide-react';
+import { FileText, Users, Search, Building2, MapPin, Shield, Eye } from 'lucide-react';
 
 const StaffDashboard: React.FC = () => {
   const { state } = useAppContext();
@@ -16,48 +16,282 @@ const StaffDashboard: React.FC = () => {
     staff.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const styles = {
+    pageBackground: {
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 50%, #F0FDF4 100%)'
+    },
+    container: {
+      maxWidth: '80rem',
+      margin: '0 auto',
+      padding: '2rem 1rem'
+    },
+    header: {
+      background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+      borderRadius: '1.5rem',
+      padding: '2rem',
+      marginBottom: '2rem',
+      color: 'white',
+      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+    },
+    welcomeCard: {
+      backgroundColor: 'white',
+      borderRadius: '1.5rem',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+      padding: '2rem',
+      marginBottom: '2rem',
+      border: '1px solid #F3F4F6'
+    },
+    avatar: {
+      width: '5rem',
+      height: '5rem',
+      background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      marginRight: '1.5rem',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+    },
+    statsGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+      gap: '1.5rem',
+      marginBottom: '2rem'
+    },
+    statCard: {
+      backgroundColor: 'white',
+      borderRadius: '1rem',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+      padding: '1.5rem',
+      border: '1px solid #F3F4F6',
+      transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+    },
+    directoryCard: {
+      backgroundColor: 'white',
+      borderRadius: '1.5rem',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+      overflow: 'hidden',
+      border: '1px solid #F3F4F6'
+    },
+    searchContainer: {
+      position: 'relative' as const,
+      maxWidth: '20rem'
+    },
+    searchInput: {
+      width: '100%',
+      paddingLeft: '2.5rem',
+      paddingRight: '1rem',
+      paddingTop: '0.75rem',
+      paddingBottom: '0.75rem',
+      border: '1px solid #D1D5DB',
+      borderRadius: '0.75rem',
+      fontSize: '0.875rem',
+      outline: 'none',
+      transition: 'border-color 0.2s ease'
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse' as const
+    },
+    tableHeader: {
+      backgroundColor: '#F9FAFB',
+      borderBottom: '1px solid #E5E7EB'
+    },
+    tableHeaderCell: {
+      textAlign: 'left' as const,
+      padding: '1rem',
+      fontWeight: '600' as const,
+      color: '#374151',
+      fontSize: '0.875rem'
+    },
+    tableRow: {
+      borderBottom: '1px solid #F3F4F6',
+      transition: 'background-color 0.2s ease'
+    },
+    tableCell: {
+      padding: '1rem',
+      fontSize: '0.875rem',
+      color: '#6B7280'
+    },
+    infoCard: {
+      background: 'linear-gradient(135deg, #FFF7ED 0%, #F0FDF4 100%)',
+      border: '1px solid #FED7AA',
+      borderRadius: '1rem',
+      padding: '1.5rem',
+      marginTop: '2rem'
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-6">
+    <div style={styles.pageBackground}>
+      <div style={styles.container}>
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Staff Portal</h1>
-          <p className="text-gray-600">View Staff Directory & Information</p>
+        <div style={styles.header}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                Staff Portal
+              </h1>
+              <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>
+                Akwa Ibom State Budget Office • Staff Directory Access
+              </p>
+            </div>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '1rem',
+              padding: '1rem',
+              textAlign: 'center' as const,
+              backdropFilter: 'blur(10px)'
+            }}>
+              <Shield style={{ width: '2rem', height: '2rem', margin: '0 auto 0.5rem auto' }} />
+              <p style={{ fontSize: '0.875rem', fontWeight: '500' }}>Read-Only Access</p>
+            </div>
+          </div>
         </div>
 
         {/* Welcome Card */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+        <div style={styles.welcomeCard}>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={styles.avatar}>
               {state.user?.firstName?.[0]}{state.user?.lastName?.[0]}
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">
+            <div style={{ flex: 1 }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1F2937', marginBottom: '0.25rem' }}>
                 Welcome, {state.user?.firstName} {state.user?.lastName}
               </h2>
-              <p className="text-gray-600">{state.user?.office} - Staff Member</p>
+              <p style={{ color: '#6B7280', fontSize: '1rem', marginBottom: '0.5rem' }}>
+                {state.user?.office} • Staff Member
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem', color: '#9CA3AF' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <Building2 style={{ width: '1rem', height: '1rem' }} />
+                  Budget Office
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <MapPin style={{ width: '1rem', height: '1rem' }} />
+                  Akwa Ibom State
+                </span>
+              </div>
+            </div>
+            <div style={{
+              background: 'linear-gradient(135deg, #F0FDF4 0%, #FFF7ED 100%)',
+              borderRadius: '0.75rem',
+              padding: '1rem',
+              textAlign: 'center' as const,
+              border: '1px solid #FED7AA'
+            }}>
+              <Eye style={{ width: '1.5rem', height: '1.5rem', color: 'var(--akwa-green)', margin: '0 auto 0.25rem auto' }} />
+              <p style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: '500' }}>Directory View</p>
             </div>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <FileText className="w-8 h-8 text-green-500" />
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Total Staff Records</p>
-                <p className="text-2xl font-bold">{state.staffData.length}</p>
+        {/* Stats Grid */}
+        <div style={styles.statsGrid}>
+          <div 
+            style={styles.statCard}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.15)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{
+                width: '3rem',
+                height: '3rem',
+                backgroundColor: '#F0FDF4',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '1rem'
+              }}>
+                <FileText style={{ width: '1.5rem', height: '1.5rem', color: 'var(--akwa-green)' }} />
+              </div>
+              <div>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '0.25rem' }}>
+                  Total Staff Records
+                </p>
+                <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1F2937' }}>
+                  {state.staffData.length.toLocaleString()}
+                </p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <Users className="w-8 h-8 text-orange-500" />
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Departments</p>
-                <p className="text-2xl font-bold">
+
+          <div 
+            style={styles.statCard}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.15)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{
+                width: '3rem',
+                height: '3rem',
+                backgroundColor: '#FFF7ED',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '1rem'
+              }}>
+                <Users style={{ width: '1.5rem', height: '1.5rem', color: 'var(--akwa-orange)' }} />
+              </div>
+              <div>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '0.25rem' }}>
+                  Departments
+                </p>
+                <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1F2937' }}>
                   {new Set(state.staffData.map(s => s.department)).size}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div 
+            style={styles.statCard}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.15)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{
+                width: '3rem',
+                height: '3rem',
+                background: 'linear-gradient(135deg, #F0FDF4 0%, #FFF7ED 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '1rem'
+              }}>
+                <Building2 style={{ width: '1.5rem', height: '1.5rem', color: '#6B7280' }} />
+              </div>
+              <div>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '0.25rem' }}>
+                  Local Gov. Areas
+                </p>
+                <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1F2937' }}>
+                  {new Set(state.staffData.map(s => s.lga)).size}
                 </p>
               </div>
             </div>
@@ -65,47 +299,89 @@ const StaffDashboard: React.FC = () => {
         </div>
 
         {/* Staff Directory */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Staff Directory</h3>
+        <div style={styles.directoryCard}>
+          {/* Directory Header */}
+          <div style={{
+            background: 'linear-gradient(135deg, #F9FAFB 0%, #FFF7ED 100%)',
+            padding: '1.5rem',
+            borderBottom: '1px solid #E5E7EB'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1F2937', marginBottom: '0.25rem' }}>
+                  Staff Directory
+                </h3>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280' }}>
+                  Browse and search through the staff database
+                </p>
+              </div>
               
-              {/* Search */}
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <div style={styles.searchContainer}>
+                <Search style={{
+                  width: '1rem',
+                  height: '1rem',
+                  position: 'absolute',
+                  left: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: '#9CA3AF'
+                }} />
                 <input
                   type="text"
-                  placeholder="Search staff..."
+                  placeholder="Search staff, department, rank..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  style={styles.searchInput}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--akwa-green)'}
+                  onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
                 />
               </div>
             </div>
           </div>
 
-          <div className="p-6">
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">S/N</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Name</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Rank</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Grade</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Department</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">LGA</th>
+          {/* Table */}
+          <div style={{ padding: '1.5rem' }}>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={styles.table}>
+                <thead style={styles.tableHeader}>
+                  <tr>
+                    <th style={styles.tableHeaderCell}>S/N</th>
+                    <th style={styles.tableHeaderCell}>Name of Officer</th>
+                    <th style={styles.tableHeaderCell}>Rank</th>
+                    <th style={styles.tableHeaderCell}>Grade Level</th>
+                    <th style={styles.tableHeaderCell}>Department</th>
+                    <th style={styles.tableHeaderCell}>LGA</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredStaff.map((staff, index) => (
-                    <tr key={staff.sn} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                      <td className="py-3 px-4 text-sm">{staff.sn}</td>
-                      <td className="py-3 px-4 text-sm font-medium">{staff.nameOfOfficer}</td>
-                      <td className="py-3 px-4 text-sm">{staff.rank}</td>
-                      <td className="py-3 px-4 text-sm">{staff.gradeLevel}</td>
-                      <td className="py-3 px-4 text-sm">{staff.department}</td>
-                      <td className="py-3 px-4 text-sm">{staff.lga}</td>
+                    <tr 
+                      key={staff.sn} 
+                      style={styles.tableRow}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#F9FAFB'}
+                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <td style={{...styles.tableCell, fontWeight: '500', color: '#374151'}}>
+                        {staff.sn}
+                      </td>
+                      <td style={{...styles.tableCell, fontWeight: '600', color: '#1F2937'}}>
+                        {staff.nameOfOfficer}
+                      </td>
+                      <td style={styles.tableCell}>{staff.rank}</td>
+                      <td style={styles.tableCell}>
+                        <span style={{
+                          backgroundColor: '#F0FDF4',
+                          color: 'var(--akwa-green)',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '0.375rem',
+                          fontSize: '0.75rem',
+                          fontWeight: '500'
+                        }}>
+                          {staff.gradeLevel}
+                        </span>
+                      </td>
+                      <td style={styles.tableCell}>{staff.department}</td>
+                      <td style={styles.tableCell}>{staff.lga}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -113,30 +389,77 @@ const StaffDashboard: React.FC = () => {
             </div>
 
             {filteredStaff.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No staff found matching your search.</p>
+              <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+                <div style={{
+                  width: '4rem',
+                  height: '4rem',
+                  backgroundColor: '#F3F4F6',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem auto'
+                }}>
+                  <Search style={{ width: '1.5rem', height: '1.5rem', color: '#9CA3AF' }} />
+                </div>
+                <p style={{ color: '#6B7280', fontSize: '1rem', marginBottom: '0.5rem' }}>
+                  No staff found matching your search
+                </p>
+                <p style={{ color: '#9CA3AF', fontSize: '0.875rem' }}>
+                  Try adjusting your search terms or browse all records
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Quick Info */}
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
+        {/* Information Card */}
+        <div style={styles.infoCard}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{
+              width: '2.5rem',
+              height: '2.5rem',
+              backgroundColor: '#FFF7ED',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '1rem',
+              marginTop: '0.125rem'
+            }}>
+              <Shield style={{ width: '1.25rem', height: '1.25rem', color: 'var(--akwa-orange)' }} />
             </div>
-            <div className="ml-3">
-              <p className="text-sm text-blue-700">
-                <strong>Staff Portal Access:</strong> You have read-only access to view staff directory and contact information. 
-                For data updates or administrative tasks, please contact your ICT Administrator or Director.
+            <div>
+              <h5 style={{
+                fontWeight: '600',
+                color: '#1F2937',
+                fontSize: '1rem',
+                marginBottom: '0.5rem'
+              }}>
+                Staff Portal Access Information
+              </h5>
+              <p style={{
+                fontSize: '0.875rem',
+                color: '#6B7280',
+                lineHeight: '1.5',
+                margin: 0
+              }}>
+                <strong>Read-Only Access:</strong> You have view-only permissions to browse the staff directory and contact information. 
+                For data updates, user management, or administrative tasks, please contact your ICT Administrator or Director. 
+                All activities in this portal are monitored and logged for security purposes.
               </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* CSS Variables */}
+      <style>{`
+        :root {
+          --akwa-green: #16a34a;
+          --akwa-orange: #ea580c;
+        }
+      `}</style>
     </div>
   );
 };
