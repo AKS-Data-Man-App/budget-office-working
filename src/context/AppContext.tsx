@@ -224,7 +224,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     dispatch({ type: 'SET_PAGE', payload: page as AppPage });
   };
 
+  // Enhanced useEffect with URL detection for password reset
   useEffect(() => {
+    // Check for password reset URL first (before authentication)
+    const currentPath = window.location.pathname;
+    const currentSearch = window.location.search;
+    
+    // Detect password reset URLs
+    if (currentPath.includes('/reset-password') || currentSearch.includes('token=')) {
+      console.log('🔑 Password reset URL detected, routing to reset page...');
+      dispatch({ type: 'SET_PAGE', payload: 'reset-password' });
+      return; // Don't check authentication for password reset page
+    }
+    
+    // Normal authentication check for other pages
     checkAuthentication();
   }, []);
 
