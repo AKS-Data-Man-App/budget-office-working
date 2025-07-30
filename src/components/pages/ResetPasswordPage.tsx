@@ -88,46 +88,235 @@ const ResetPasswordPage = () => {
     setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
   };
 
+  // CSS Styles
+  const styles = {
+    pageBackground: {
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 50%, #F0FDF4 100%)'
+    },
+    container: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem 1rem',
+      minHeight: '100vh'
+    },
+    card: {
+      backgroundColor: 'white',
+      borderRadius: '1.5rem',
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      padding: '2rem',
+      maxWidth: '28rem',
+      width: '100%',
+      border: '1px solid #F3F4F6'
+    },
+    header: {
+      textAlign: 'center' as const,
+      marginBottom: '2rem'
+    },
+    iconContainer: {
+      width: '4rem',
+      height: '4rem',
+      background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: '0 auto 1rem auto'
+    },
+    title: {
+      fontSize: '1.875rem',
+      fontWeight: 'bold' as const,
+      color: '#1F2937',
+      marginBottom: '0.5rem'
+    },
+    subtitle: {
+      color: '#6B7280',
+      fontSize: '0.875rem'
+    },
+    userInfoCard: {
+      background: 'linear-gradient(135deg, #F0FDF4 0%, #FFF7ED 100%)',
+      borderRadius: '0.75rem',
+      padding: '1rem',
+      marginBottom: '1.5rem',
+      border: '1px solid #FED7AA'
+    },
+    inputGroup: {
+      marginBottom: '1rem'
+    },
+    label: {
+      display: 'block',
+      fontSize: '0.875rem',
+      fontWeight: '500' as const,
+      color: '#374151',
+      marginBottom: '0.5rem'
+    },
+    inputContainer: {
+      position: 'relative' as const
+    },
+    input: {
+      width: '100%',
+      padding: '0.75rem 1rem',
+      paddingRight: '3rem',
+      border: '1px solid #D1D5DB',
+      borderRadius: '0.75rem',
+      fontSize: '1rem',
+      outline: 'none',
+      transition: 'border-color 0.2s ease',
+      boxSizing: 'border-box' as const
+    },
+    eyeButton: {
+      position: 'absolute' as const,
+      right: '0.75rem',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      background: 'none',
+      border: 'none',
+      color: '#9CA3AF',
+      cursor: 'pointer'
+    },
+    requirementsCard: {
+      background: 'linear-gradient(135deg, #F9FAFB 0%, #FFF7ED 100%)',
+      borderRadius: '0.75rem',
+      padding: '1rem',
+      marginBottom: '1.5rem',
+      border: '1px solid #E5E7EB'
+    },
+    requirementItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      marginBottom: '0.25rem'
+    },
+    dot: {
+      width: '0.5rem',
+      height: '0.5rem',
+      borderRadius: '50%'
+    },
+    errorCard: {
+      backgroundColor: '#FEF2F2',
+      border: '1px solid #FECACA',
+      borderRadius: '0.75rem',
+      padding: '1rem',
+      marginBottom: '1.5rem'
+    },
+    submitButton: {
+      width: '100%',
+      background: 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+      color: 'white',
+      padding: '0.75rem 1rem',
+      borderRadius: '0.75rem',
+      fontWeight: '500' as const,
+      border: 'none',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '0.5rem',
+      fontSize: '1rem',
+      transition: 'transform 0.2s ease'
+    },
+    backButton: {
+      background: 'none',
+      border: 'none',
+      color: '#6B7280',
+      fontSize: '0.875rem',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.25rem',
+      margin: '1rem auto 0 auto'
+    },
+    spinner: {
+      width: '1rem',
+      height: '1rem',
+      border: '2px solid white',
+      borderTop: '2px solid transparent',
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite'
+    }
+  };
+
   const LoadingScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">Validating Reset Link</h2>
-        <p className="text-gray-600">Please wait...</p>
+    <div style={styles.pageBackground}>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={styles.header}>
+            <div style={{...styles.iconContainer, animation: 'spin 1s linear infinite'}}>
+              <div style={styles.spinner}></div>
+            </div>
+            <h2 style={styles.title}>Validating Reset Link</h2>
+            <p style={styles.subtitle}>Please wait while we verify your request...</p>
+          </div>
+        </div>
       </div>
     </div>
   );
 
   const SuccessScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-8 h-8 text-green-600" />
+    <div style={styles.pageBackground}>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={styles.header}>
+            <div style={{...styles.iconContainer, backgroundColor: '#F0FDF4'}}>
+              <CheckCircle style={{ width: '2rem', height: '2rem', color: 'var(--akwa-green)' }} />
+            </div>
+            <h2 style={styles.title}>Password Updated!</h2>
+            <p style={styles.subtitle}>Your password has been set successfully.</p>
+          </div>
+          
+          <div style={styles.userInfoCard}>
+            <h4 style={{ fontWeight: '600', color: '#1F2937', marginBottom: '0.5rem' }}>
+              Welcome, {userInfo?.firstName} {userInfo?.lastName}!
+            </h4>
+            <p style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '0.5rem' }}>
+              <strong>Email:</strong> {userInfo?.email}
+            </p>
+            <p style={{ fontSize: '0.75rem', color: '#6B7280', fontStyle: 'italic' }}>
+              You can now access the Budget Office system.
+            </p>
+          </div>
+
+          <div style={{
+            backgroundColor: '#F0FDF4',
+            borderRadius: '0.75rem',
+            padding: '1rem',
+            textAlign: 'center' as const
+          }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--akwa-green)', fontWeight: '500' }}>
+              🎉 Account Setup Complete
+            </p>
+            <p style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.25rem' }}>
+              Redirecting to login page in 3 seconds...
+            </p>
+          </div>
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Password Updated!</h2>
-        <p className="text-gray-600 mb-6">Your password has been updated successfully.</p>
-        <div className="bg-blue-50 rounded-lg p-4 mb-6">
-          <p className="text-sm text-blue-800"><strong>Email:</strong> {userInfo?.email}</p>
-        </div>
-        <p className="text-sm text-gray-500">Redirecting to login...</p>
       </div>
     </div>
   );
 
   const ErrorScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <AlertCircle className="w-8 h-8 text-red-600" />
+    <div style={styles.pageBackground}>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={styles.header}>
+            <div style={{...styles.iconContainer, backgroundColor: '#FEF2F2'}}>
+              <AlertCircle style={{ width: '2rem', height: '2rem', color: '#EF4444' }} />
+            </div>
+            <h2 style={styles.title}>Invalid Reset Link</h2>
+            <p style={{...styles.subtitle, marginBottom: '2rem', lineHeight: '1.5'}}>{error}</p>
+          </div>
+          
+          <button
+            onClick={() => window.location.href = '/login'}
+            style={styles.submitButton}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            <ArrowLeft style={{ width: '1rem', height: '1rem' }} />
+            Back to Login
+          </button>
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Invalid Reset Link</h2>
-        <p className="text-gray-600 mb-6">{error}</p>
-        <button
-          onClick={() => window.location.href = '/login'}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to Login
-        </button>
       </div>
     </div>
   );
@@ -137,111 +326,152 @@ const ResetPasswordPage = () => {
   if (!tokenValid) return <ErrorScreen />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-8 h-8 text-white" />
+    <div style={styles.pageBackground}>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          {/* Header */}
+          <div style={styles.header}>
+            <div style={styles.iconContainer}>
+              <Lock style={{ width: '2rem', height: '2rem', color: 'white' }} />
+            </div>
+            <h1 style={styles.title}>Set Your Password</h1>
+            <p style={styles.subtitle}>
+              Hello <strong>{userInfo?.firstName} {userInfo?.lastName}</strong>, create your secure password.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Set Your Password</h1>
-          <p className="text-gray-600">Hello <strong>{userInfo?.firstName} {userInfo?.lastName}</strong>, create a secure password.</p>
-        </div>
 
-        <div className="bg-blue-50 rounded-lg p-4 mb-6">
-          <p className="text-sm text-blue-800"><strong>Email:</strong> {userInfo?.email}</p>
-        </div>
+          {/* User Info */}
+          <div style={styles.userInfoCard}>
+            <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: 0 }}>
+              <strong style={{ color: '#1F2937' }}>Email:</strong> {userInfo?.email}
+            </p>
+          </div>
 
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-            <div className="relative">
+          {/* Password Form */}
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>New Password</label>
+            <div style={styles.inputContainer}>
               <input
                 type={showPassword.new ? "text" : "password"}
                 name="newPassword"
                 value={formData.newPassword}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                style={styles.input}
                 placeholder="Enter your new password"
+                onFocus={(e) => e.target.style.borderColor = 'var(--akwa-green)'}
+                onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
               />
-              <button type="button" onClick={() => togglePassword('new')} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                {showPassword.new ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              <button type="button" onClick={() => togglePassword('new')} style={styles.eyeButton}>
+                {showPassword.new ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-            <div className="relative">
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Confirm Password</label>
+            <div style={styles.inputContainer}>
               <input
                 type={showPassword.confirm ? "text" : "password"}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                style={styles.input}
                 placeholder="Confirm your new password"
+                onFocus={(e) => e.target.style.borderColor = 'var(--akwa-green)'}
+                onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
               />
-              <button type="button" onClick={() => togglePassword('confirm')} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                {showPassword.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              <button type="button" onClick={() => togglePassword('confirm')} style={styles.eyeButton}>
+                {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Requirements:</h4>
-            <div className="space-y-1 text-xs text-gray-600">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${formData.newPassword.length >= 8 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                At least 8 characters
-              </div>
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${/(?=.*[a-z])(?=.*[A-Z])/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                Upper & lowercase letters
-              </div>
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${/(?=.*\d)/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                At least one number
-              </div>
+          {/* Password Requirements */}
+          <div style={styles.requirementsCard}>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.75rem' }}>
+              Password Requirements:
+            </h4>
+            <div style={styles.requirementItem}>
+              <div style={{
+                ...styles.dot,
+                backgroundColor: formData.newPassword.length >= 8 ? 'var(--akwa-green)' : '#D1D5DB'
+              }}></div>
+              <span style={{ fontSize: '0.75rem', color: '#6B7280' }}>At least 8 characters</span>
+            </div>
+            <div style={styles.requirementItem}>
+              <div style={{
+                ...styles.dot,
+                backgroundColor: /(?=.*[a-z])(?=.*[A-Z])/.test(formData.newPassword) ? 'var(--akwa-green)' : '#D1D5DB'
+              }}></div>
+              <span style={{ fontSize: '0.75rem', color: '#6B7280' }}>Upper & lowercase letters</span>
+            </div>
+            <div style={styles.requirementItem}>
+              <div style={{
+                ...styles.dot,
+                backgroundColor: /(?=.*\d)/.test(formData.newPassword) ? 'var(--akwa-green)' : '#D1D5DB'
+              }}></div>
+              <span style={{ fontSize: '0.75rem', color: '#6B7280' }}>At least one number</span>
             </div>
           </div>
 
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-600" />
-                <p className="text-sm text-red-600">{error}</p>
+            <div style={styles.errorCard}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <AlertCircle style={{ width: '1rem', height: '1rem', color: '#EF4444' }} />
+                <p style={{ fontSize: '0.875rem', color: '#EF4444', margin: 0 }}>{error}</p>
               </div>
             </div>
           )}
 
+          {/* Submit Button */}
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-green-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            style={{
+              ...styles.submitButton,
+              background: loading ? '#9CA3AF' : 'linear-gradient(135deg, var(--akwa-green) 0%, var(--akwa-orange) 100%)',
+              cursor: loading ? 'not-allowed' : 'pointer'
+            }}
+            onMouseOver={(e) => !loading && (e.currentTarget.style.transform = 'translateY(-1px)')}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           >
             {loading ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                <div style={styles.spinner}></div>
                 Setting Password...
               </>
             ) : (
               <>
-                <Lock className="w-4 h-4" />
-                Set Password
+                <Lock size={16} />
+                Set My Password
               </>
             )}
           </button>
-        </div>
 
-        <div className="mt-6 text-center">
+          {/* Back to Login */}
           <button
             onClick={() => window.location.href = '/login'}
-            className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1 mx-auto"
+            style={styles.backButton}
+            onMouseOver={(e) => e.currentTarget.style.color = '#374151'}
+            onMouseOut={(e) => e.currentTarget.style.color = '#6B7280'}
           >
-            <ArrowLeft className="w-3 h-3" />
+            <ArrowLeft size={12} />
             Back to Login
           </button>
         </div>
       </div>
+
+      {/* CSS Animation */}
+      <style>{`
+        :root {
+          --akwa-green: #16a34a;
+          --akwa-orange: #ea580c;
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
