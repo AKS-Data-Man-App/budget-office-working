@@ -1,7 +1,7 @@
 // src/App.tsx
 // Role-Based Router for Akwa Ibom State Budget Office
 // 3-Tier Authentication System: Director → ICT Head → Staff
-// Updated with React Hot Toast Notifications
+// Updated with React Hot Toast Notifications and Password Reset
 
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -14,6 +14,7 @@ import HomePage from './components/pages/HomePage';
 import DirectorDashboard from './components/pages/DirectorDashboard';
 import ICTDashboard from './components/pages/ICTDashboard';
 import StaffDashboard from './components/pages/StaffDashboard';
+import ResetPasswordPage from './components/pages/ResetPasswordPage';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
 // ===================================================================
@@ -73,6 +74,9 @@ const AppContent: React.FC = () => {
         
       case 'login':
         return <LoginPage />;
+
+      case 'reset-password':
+        return <ResetPasswordPage />;
       
       case 'director-dashboard':
         return (

@@ -205,11 +205,13 @@ export interface UsersListResponse {
 // ===================================================================
 
 // Application pages for role-based routing
+// Application pages for role-based routing
 export type AppPage = 
   | 'home'
   | 'budget-office' 
   | 'database'
   | 'login'
+  | 'reset-password'
   | 'director-dashboard'
   | 'ict-dashboard' 
   | 'staff-dashboard';
